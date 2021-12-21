@@ -8,8 +8,6 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface IUserService
     {
-        Task<bool> IsExistAsync(int id);
-        Task<IList<User>> GetAll();
-        Task Add(User user);
+        
     }
 }

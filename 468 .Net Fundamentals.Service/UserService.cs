@@ -18,39 +18,6 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Add(User user)
-        {
-            try
-            {
-                await _unitOfWork.BeginTransaction();
-
-                user.Role = (int)EnumType.Role.Employee;
-                await _unitOfWork.Repository<User>().InsertAsync(user);
-
-                await _unitOfWork.CommitTransaction();
-            }catch(Exception e)
-            {
-                await _unitOfWork.RollbackTransaction();
-            }
-
-        }
-
-        public async Task<IList<User>> GetAll()
-        {
-            return await _unitOfWork.Repository<User>().GetAllAsync();
-        }
-
-        public async Task<User> GetOne(int userId)
-        {
-            return await _unitOfWork.Repository<User>().FindAsync(userId);
-        }
-
- 
-        public async Task<bool> IsExistAsync(int id)
-        {
-            var cardRepo = _unitOfWork.Repository<Card>();
-            return await cardRepo.AnyAsync(_ => _.Id == id);
-        }
-
+        
     }
 }

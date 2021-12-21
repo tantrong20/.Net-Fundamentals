@@ -9,11 +9,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     public interface IProjectService
     {
         
-        Task Create(Project project);
-
-        Task UpdateProjectName(int id, Project project);
-
-        Task AddProjectMember(int proId, int userId);
+     
 
     }
 }

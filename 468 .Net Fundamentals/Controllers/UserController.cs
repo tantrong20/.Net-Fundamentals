@@ -22,18 +22,5 @@ namespace _468_.Net_Fundamentals.Controllers
 
 
 
-        [HttpPost]
-        public async Task Post(User user)
-        {
-            await _userService.Add(user);
-        }
-
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> CheckExist(int id)
-        {
-            var result = await _userService.IsExistAsync(id);
-            return Ok(result);
-        }
     }
 }
