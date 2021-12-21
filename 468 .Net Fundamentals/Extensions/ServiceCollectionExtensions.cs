@@ -1,5 +1,4 @@
 ﻿using _468_.Net_Fundamentals.Domain.Interface.Services;
-using _468_.Net_Fundamentals.Domain.Model;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Infrastructure;
 using _468_.Net_Fundamentals.Infrastructure.Repositories;

@@ -1,5 +1,6 @@
 ﻿using _468_.Net_Fundamentals.Domain;
 using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace _468_.Net_Fundamentals.Infrastructure
         {
             var users = new User[]
             {
-                new User {Id =1, Name = "Tan Trong", Email = "tronglt2001@gmail.com", Role = (int)EnumType.Role.Employee},
-                new User {Id =2, Name = "Hien Nhu", Email = "hiennhu@gmail.com", Role = (int)EnumType.Role.Employee}
+                new User {Id =1, Name = "Tan Trong", Email = "tronglt2001@gmail.com", Role = (int)Role.Employee},
+                new User {Id =2, Name = "Hien Nhu", Email = "hiennhu@gmail.com", Role = (int)Role.Employee}
             };
 
             var projects = new Project[]

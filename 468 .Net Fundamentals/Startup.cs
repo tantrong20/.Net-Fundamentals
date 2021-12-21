@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using _468_.Net_Fundamentals.Extensions;
-using _468_.Net_Fundamentals.Domain.Model;
 using _468_.Net_Fundamentals.Domain.Repositories;
 
 namespace _468_.Net_Fundamentals
