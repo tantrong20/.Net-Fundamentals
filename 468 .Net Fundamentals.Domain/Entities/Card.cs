@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _468_.Net_Fundamentals.Domain.EnumType;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +18,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public string Description { get; set; }
 
-        public int? Priority { get; set; }
+        public TaskPriority Priority { get; set; }
 
         public int BusinessId { get; set; }
 
@@ -25,7 +26,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [ForeignKey("BusinessId")]
         public virtual Business Business { get; set; }
 
-        public virtual IList<Todo> Todos { get; set; }
+        /*public virtual IList<Todo> Todos { get; set; }*/
         // Status = List/Stage: Backlog, inprocess, done
     }
 }

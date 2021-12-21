@@ -26,6 +26,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("BusinessId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -33,6 +36,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BusinessId");
 
                     b.HasIndex("ProjectId");
 
@@ -58,7 +63,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Priority")
+                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -86,28 +91,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.HasIndex("CardId");
 
                     b.ToTable("CardAssign");
-                });
-
-            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardTag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CardId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CardId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("CardTag");
                 });
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
@@ -138,29 +121,15 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 676, DateTimeKind.Local).AddTicks(8833),
+                            CreatedOn = new DateTime(2021, 12, 21, 15, 40, 19, 838, DateTimeKind.Local).AddTicks(7675),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9089),
+                            CreatedBy = 2,
+                            CreatedOn = new DateTime(2021, 12, 21, 15, 40, 19, 840, DateTimeKind.Local).AddTicks(5065),
                             Name = "Project 2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9142),
-                            Name = "Project 3"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9144),
-                            Name = "Project 4"
                         });
                 });
 
@@ -189,13 +158,15 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("Tag");
                 });
@@ -263,8 +234,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
                 {
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", null)
+                        .WithMany("Businesses")
+                        .HasForeignKey("BusinessId");
+
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
-                        .WithMany()
+                        .WithMany("Businesses")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -273,7 +248,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", "Business")
-                        .WithMany()
+                        .WithMany("Cards")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -292,17 +267,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardTag", b =>
-                {
-                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
-                        .WithMany()
-                        .HasForeignKey("CardId");
-
-                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Tag", "Tag")
-                        .WithMany("CardTags")
-                        .HasForeignKey("TagId");
                 });
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
@@ -329,10 +293,19 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Tag", b =>
+                {
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Todo", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
-                        .WithMany("Todos")
+                        .WithMany()
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -3,24 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
-    public partial class InitialDatabase : Migration
+    public partial class initialDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Tag",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    Color = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
@@ -64,11 +50,18 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    ProjectId = table.Column<int>(nullable: false)
+                    ProjectId = table.Column<int>(nullable: false),
+                    BusinessId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Business", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Business_Business_BusinessId",
+                        column: x => x.BusinessId,
+                        principalTable: "Business",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Business_Project_ProjectId",
                         column: x => x.ProjectId,
@@ -102,6 +95,26 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tag",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    ProjectId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tag", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tag_Project_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Project",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Card",
                 columns: table => new
                 {
@@ -110,7 +123,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Name = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    Priority = table.Column<int>(nullable: true),
+                    Priority = table.Column<int>(nullable: false),
                     BusinessId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -149,32 +162,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardTag",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TagId = table.Column<int>(nullable: true),
-                    CardId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CardTag", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CardTag_Card_CardId",
-                        column: x => x.CardId,
-                        principalTable: "Card",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CardTag_Tag_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tag",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Todo",
                 columns: table => new
                 {
@@ -208,13 +195,17 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[,]
-                {
-                    { 1, 1, new DateTime(2021, 12, 21, 9, 48, 57, 676, DateTimeKind.Local).AddTicks(8833), "Project 1" },
-                    { 2, 1, new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9089), "Project 2" },
-                    { 3, 2, new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9142), "Project 3" },
-                    { 4, 2, new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9144), "Project 4" }
-                });
+                values: new object[] { 1, 1, new DateTime(2021, 12, 21, 15, 40, 19, 838, DateTimeKind.Local).AddTicks(7675), "Project 1" });
+
+            migrationBuilder.InsertData(
+                table: "Project",
+                columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
+                values: new object[] { 2, 2, new DateTime(2021, 12, 21, 15, 40, 19, 840, DateTimeKind.Local).AddTicks(5065), "Project 2" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Business_BusinessId",
+                table: "Business",
+                column: "BusinessId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",
@@ -232,16 +223,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 column: "CardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardTag_CardId",
-                table: "CardTag",
-                column: "CardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CardTag_TagId",
-                table: "CardTag",
-                column: "TagId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Project_CreatedBy",
                 table: "Project",
                 column: "CreatedBy");
@@ -249,6 +230,11 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectMember_ProjectId",
                 table: "ProjectMember",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tag_ProjectId",
+                table: "Tag",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
@@ -263,16 +249,13 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "CardAssign");
 
             migrationBuilder.DropTable(
-                name: "CardTag");
-
-            migrationBuilder.DropTable(
                 name: "ProjectMember");
 
             migrationBuilder.DropTable(
-                name: "Todo");
+                name: "Tag");
 
             migrationBuilder.DropTable(
-                name: "Tag");
+                name: "Todo");
 
             migrationBuilder.DropTable(
                 name: "Card");

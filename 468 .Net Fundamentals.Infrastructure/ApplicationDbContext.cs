@@ -25,9 +25,7 @@ namespace _468_.Net_Fundamentals.Infrastructure
             var projects = new Project[]
             {
                 new Project {Id =1, Name = "Project 1", CreatedOn = DateTime.Now, CreatedBy =1 },
-                new Project {Id =2, Name = "Project 2", CreatedOn = DateTime.Now, CreatedBy =1 },
-                new Project {Id =3, Name = "Project 3", CreatedOn = DateTime.Now, CreatedBy =2 },
-                new Project {Id =4, Name = "Project 4", CreatedOn = DateTime.Now, CreatedBy =2 },
+                new Project {Id =2, Name = "Project 2", CreatedOn = DateTime.Now, CreatedBy =2 },   
             };
 
             builder.Entity<Project>().HasData(projects);
@@ -66,7 +64,6 @@ namespace _468_.Net_Fundamentals.Infrastructure
         public DbSet<Business> Businesses { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<CardAssign> CardAssigns { get; set; }
-        public DbSet<CardTag> CardTags { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }

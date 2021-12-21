@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class CardService : RepositoryBase<Card>, ICardService
+    public class CardService : RepositoryBase<Domain.Entities.Card>, ICardService
     {
         private readonly IUnitOfWork _unitOfWork;
         public CardService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
@@ -17,7 +17,7 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddCard(Card card)
+        public async System.Threading.Tasks.Task AddCard(Domain.Entities.Card card)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace _468_.Net_Fundamentals.Service
 
                /* card.Project = await _unitOfWork.Repository<Project>().FindAsync(1);
                 card.Status = (int)EnumType.Status.Backlog;*/
-                await _unitOfWork.Repository<Card>().InsertAsync(card);
+                await _unitOfWork.Repository<Domain.Entities.Card>().InsertAsync(card);
                 await _unitOfWork.CommitTransaction();
             }catch(Exception e)
             {

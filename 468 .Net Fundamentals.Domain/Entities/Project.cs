@@ -22,8 +22,10 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         public int CreatedBy { get; set; }
 
         [ForeignKey("CreatedBy")]
-        public virtual User User { get; set; }  
-       
+        public virtual User User { get; set; }
+
+        public virtual IList<Business> Businesses { get; set; }
+
     }
 }
 

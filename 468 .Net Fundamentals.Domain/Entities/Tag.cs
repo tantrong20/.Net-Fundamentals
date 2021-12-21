@@ -10,8 +10,11 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     {
         public string Name { get; set; }
 
-        public string Color { get; set; }
+        public int ProjectId { get; set; }
 
-        public virtual IList<CardTag> CardTags { get; set; }
+        [ForeignKey("ProjectId")] 
+        public virtual Project Project { get; set; }
+
+        /*public virtual IList<CardTag> CardTags { get; set; }*/
     }
 }

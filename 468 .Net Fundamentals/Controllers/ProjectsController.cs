@@ -1,12 +1,13 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
+using _468_.Net_Fundamentals.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers
 {
-    [Route("api/test")]
+    [Route("api/Project")]
     [ApiController]
     public class ProjectsController : ControllerBase
     {
@@ -17,9 +18,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task Create([FromBody] Project project)
+        public async Task Create([FromBody] ProjectCreateRequest projectCreateVM)
         {
-            await _projectService.Create(project);
+            await _projectService.Create(projectCreateVM);
         }
 
         [HttpGet]
@@ -29,7 +30,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpGet("id")]
-        public async Task<Project> Get(int id)
+        public async Task<ProjectDetailsVM> Get(int id)
         {
             return await _projectService.Get(id);
         }
@@ -45,5 +46,30 @@ namespace _468_.Net_Fundamentals.Controllers
         {
             await _projectService.Delete(id);
         }
+
+        // Business
+
+        [Route("id/Business")]
+        [HttpPost]
+        public async Task CreateBusiness(int id, [FromBody] BusinessCreateRequest request)
+        {
+            await _projectService.CreateBusiness(id, request);
+        }
+
+        [Route("id/Business/busId")]
+        [HttpPut]
+        public async Task UpdateBusiness(int busId, [FromBody] string name)
+        {
+            await _projectService.UpdateBusiness(busId, name);
+        }
+
+        [Route("id/Business/busId")]
+        [HttpDelete]
+        public async Task DeleteBusiness(int busId)
+        {
+            await _projectService.DeleteBusiness(busId);
+        }
+
+
     }
 }

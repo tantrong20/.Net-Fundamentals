@@ -18,8 +18,6 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [Display(Name = "Add On")]
         public DateTime AddOn{ get; set; }
 
-
-
         public virtual User User { get; set; }
 
         public virtual Project Project { get; set; }
