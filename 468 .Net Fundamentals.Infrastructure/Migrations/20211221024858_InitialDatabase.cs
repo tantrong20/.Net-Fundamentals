@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
-    public partial class itial : Migration
+    public partial class InitialDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -58,23 +58,19 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Card",
+                name: "Business",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Priority = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
                     ProjectId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Card", x => x.Id);
+                    table.PrimaryKey("PK_Business", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Card_Project_ProjectId",
+                        name: "FK_Business_Project_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Project",
                         principalColumn: "Id",
@@ -106,29 +102,50 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardAssign",
+                name: "Card",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AssignTo = table.Column<int>(nullable: true),
-                    CardId = table.Column<int>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Priority = table.Column<int>(nullable: true),
+                    BusinessId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CardAssign", x => x.Id);
+                    table.PrimaryKey("PK_Card", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Card_Business_BusinessId",
+                        column: x => x.BusinessId,
+                        principalTable: "Business",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardAssign",
+                columns: table => new
+                {
+                    CardId = table.Column<int>(nullable: false),
+                    AssignTo = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardAssign", x => new { x.AssignTo, x.CardId });
                     table.ForeignKey(
                         name: "FK_CardAssign_User_AssignTo",
                         column: x => x.AssignTo,
                         principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CardAssign_Card_CardId",
                         column: x => x.CardId,
                         principalTable: "Card",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -193,21 +210,21 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2021, 12, 17, 15, 25, 33, 406, DateTimeKind.Local).AddTicks(1686), "Project 1" },
-                    { 2, 1, new DateTime(2021, 12, 17, 15, 25, 33, 407, DateTimeKind.Local).AddTicks(2278), "Project 2" },
-                    { 3, 2, new DateTime(2021, 12, 17, 15, 25, 33, 407, DateTimeKind.Local).AddTicks(2331), "Project 3" },
-                    { 4, 2, new DateTime(2021, 12, 17, 15, 25, 33, 407, DateTimeKind.Local).AddTicks(2334), "Project 4" }
+                    { 1, 1, new DateTime(2021, 12, 21, 9, 48, 57, 676, DateTimeKind.Local).AddTicks(8833), "Project 1" },
+                    { 2, 1, new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9089), "Project 2" },
+                    { 3, 2, new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9142), "Project 3" },
+                    { 4, 2, new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9144), "Project 4" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Card_ProjectId",
-                table: "Card",
+                name: "IX_Business_ProjectId",
+                table: "Business",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardAssign_AssignTo",
-                table: "CardAssign",
-                column: "AssignTo");
+                name: "IX_Card_BusinessId",
+                table: "Card",
+                column: "BusinessId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardAssign_CardId",
@@ -259,6 +276,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Card");
+
+            migrationBuilder.DropTable(
+                name: "Business");
 
             migrationBuilder.DropTable(
                 name: "Project");

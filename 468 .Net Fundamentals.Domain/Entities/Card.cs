@@ -19,16 +19,13 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public int? Priority { get; set; }
 
-        public int Status { get; set; }
-
-        public int ProjectId { get; set; }
+        public int BusinessId { get; set; }
 
 
-        [ForeignKey("ProjectId")]
-        [Required]
-        public virtual Project Project { get; set; }
+        [ForeignKey("BusinessId")]
+        public virtual Business Business { get; set; }
 
-        public virtual IList<Todo> Todos { get; set;gggg }
+        public virtual IList<Todo> Todos { get; set; }
         // Status = List/Stage: Backlog, inprocess, done
     }
 }

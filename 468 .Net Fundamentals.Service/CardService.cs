@@ -23,8 +23,8 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                card.Project = await _unitOfWork.Repository<Project>().FindAsync(1);
-                card.Status = (int)EnumType.Status.Backlog;
+               /* card.Project = await _unitOfWork.Repository<Project>().FindAsync(1);
+                card.Status = (int)EnumType.Status.Backlog;*/
                 await _unitOfWork.Repository<Card>().InsertAsync(card);
                 await _unitOfWork.CommitTransaction();
             }catch(Exception e)

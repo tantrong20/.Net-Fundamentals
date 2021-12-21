@@ -19,7 +19,7 @@ namespace _468_.Net_Fundamentals.Infrastructure
             {
                 new User {Id =1, Name = "Tan Trong", Email = "tronglt2001@gmail.com", Role = (int)EnumType.Role.Employee},
                 new User {Id =2, Name = "Hien Nhu", Email = "hiennhu@gmail.com", Role = (int)EnumType.Role.Employee}
-        };
+            };
 
             var projects = new Project[]
             {
@@ -62,6 +62,7 @@ namespace _468_.Net_Fundamentals.Infrastructure
 
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Business> Businesses { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<CardAssign> CardAssigns { get; set; }
         public DbSet<CardTag> CardTags { get; set; }

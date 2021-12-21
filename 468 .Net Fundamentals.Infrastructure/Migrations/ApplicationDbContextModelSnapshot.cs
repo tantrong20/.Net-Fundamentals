@@ -19,12 +19,35 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Business");
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BusinessId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -38,15 +61,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<int?>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("BusinessId");
 
                     b.ToTable("Card");
                 });
@@ -121,28 +138,28 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 17, 16, 54, 31, 773, DateTimeKind.Local).AddTicks(7546),
+                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 676, DateTimeKind.Local).AddTicks(8833),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 17, 16, 54, 31, 775, DateTimeKind.Local).AddTicks(2528),
+                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9089),
                             Name = "Project 2"
                         },
                         new
                         {
                             Id = 3,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 17, 16, 54, 31, 775, DateTimeKind.Local).AddTicks(2586),
+                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9142),
                             Name = "Project 3"
                         },
                         new
                         {
                             Id = 4,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 17, 16, 54, 31, 775, DateTimeKind.Local).AddTicks(2589),
+                            CreatedOn = new DateTime(2021, 12, 21, 9, 48, 57, 677, DateTimeKind.Local).AddTicks(9144),
                             Name = "Project 4"
                         });
                 });
@@ -244,11 +261,20 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
+                {
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", "Business")
+                        .WithMany()
+                        .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -306,7 +332,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Todo", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
-                        .WithMany()
+                        .WithMany("Todos")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
