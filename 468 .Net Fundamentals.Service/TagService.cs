@@ -5,35 +5,33 @@ using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class ProjectService : RepositoryBase<Project>, IProjectService
+    public class TagService : RepositoryBase<Tag>, ITagService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProjectService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public TagService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(ProjectCreateVM request)
+        public async Task Create(TagCreateVM request)
         {
             try
             {
                 await _unitOfWork.BeginTransaction();
 
-                var userLogin = await _unitOfWork.Repository<User>().FindAsync(1);
-
-                var project = new Project
+                var tag = new Tag
                 {
                     Name = request.Name,
-                    CreatedBy = userLogin.Id,
+                    ProjectId = request.ProjectId
                 };
-
-                await _unitOfWork.Repository<Project>().InsertAsync(project);
-
+              
+                await _unitOfWork.Repository<Tag>().InsertAsync(tag);
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -41,25 +39,20 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.RollbackTransaction();
             }
         }
-
-        public async Task<ProjectVM> Get(int id)
+        public async Task<IList<TagVM>> GetAll(int projectId)
         {
-            var project = await _unitOfWork.Repository<Project>().FindAsync(id);
+            var allTags = await _unitOfWork.Repository<Tag>().GetAllAsync();
 
-        
-            var projectVM = new ProjectVM
+            var tags = from tag in allTags where tag.ProjectId == projectId select tag;
+
+            var tagsVM = new List<TagVM>();
+
+            foreach(var t in tags)
             {
-                Id = project.Id,
-                Name = project.Name,
-                CreatedBy = project.CreatedBy,
-            };
+                tagsVM.Add(new TagVM { Id = t.Id, Name = t.Name, ProjectId = t.ProjectId });
+            }
 
-            return projectVM;
-        }
-
-        public async Task<IList<Project>> GetAll()
-        {
-            return await _unitOfWork.Repository<Project>().GetAllAsync();
+            return tagsVM;
         }
 
         public async Task Update(int id, string name)
@@ -68,8 +61,9 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                var project = await _unitOfWork.Repository<Project>().FindAsync(id);
-                project.Name = name;
+                var tag =  await _unitOfWork.Repository<Tag>().FindAsync(id);
+
+                tag.Name = name;
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -84,8 +78,8 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                await _unitOfWork.Repository<Project>().DeleteAsync(id);
-              
+                await _unitOfWork.Repository<Tag>().DeleteAsync(id);
+
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -93,7 +87,6 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.RollbackTransaction();
             }
         }
-        
-       
+
     }
 }

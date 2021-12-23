@@ -26,9 +26,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BusinessId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -36,8 +33,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BusinessId");
 
                     b.HasIndex("ProjectId");
 
@@ -60,10 +55,13 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("Duedate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Priority")
+                    b.Property<int?>("Priority")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -75,22 +73,32 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardAssign", b =>
                 {
-                    b.Property<int?>("AssignTo")
+                    b.Property<int>("CardId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CardId")
+                    b.Property<int>("AssignTo")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.HasKey("CardId", "AssignTo");
 
-                    b.HasKey("AssignTo", "CardId");
-
-                    b.HasIndex("CardId");
+                    b.HasIndex("AssignTo");
 
                     b.ToTable("CardAssign");
+                });
+
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardTag", b =>
+                {
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("CardTag");
                 });
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
@@ -121,14 +129,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 21, 15, 40, 19, 838, DateTimeKind.Local).AddTicks(7675),
+                            CreatedOn = new DateTime(2021, 12, 23, 11, 11, 13, 933, DateTimeKind.Local).AddTicks(4102),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 21, 15, 40, 19, 840, DateTimeKind.Local).AddTicks(5065),
+                            CreatedOn = new DateTime(2021, 12, 23, 11, 11, 13, 934, DateTimeKind.Local).AddTicks(9910),
                             Name = "Project 2"
                         });
                 });
@@ -234,10 +242,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
                 {
-                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", null)
-                        .WithMany("Businesses")
-                        .HasForeignKey("BusinessId");
-
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
                         .WithMany("Businesses")
                         .HasForeignKey("ProjectId")
@@ -269,6 +273,21 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardTag", b =>
+                {
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.User", "User")
@@ -289,7 +308,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -305,7 +324,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Todo", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
-                        .WithMany()
+                        .WithMany("Todos")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

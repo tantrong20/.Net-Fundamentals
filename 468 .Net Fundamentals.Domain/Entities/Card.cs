@@ -16,9 +16,11 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CreatedOn { get; set; }
 
-        public string Description { get; set; }
+        public DateTime? Duedate { get; set; }
 
-        public TaskPriority Priority { get; set; }
+        public string? Description { get; set; }
+
+        public TaskPriority? Priority { get; set; }
 
         public int BusinessId { get; set; }
 
@@ -26,7 +28,9 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [ForeignKey("BusinessId")]
         public virtual Business Business { get; set; }
 
-        /*public virtual IList<Todo> Todos { get; set; }*/
+        public virtual IList<Todo> Todos { get; set; }
+        /*public virtual IList<CardAssign> CardAssigns { get; set; }*/
+
         // Status = List/Stage: Backlog, inprocess, done
     }
 }

@@ -4,9 +4,10 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class BusinessVM
+    public class TodoCreateVM
     {
-        public string Name{ get; set; }
-        public int  ProjectId { get; set; }
+        public string Name { get; set; }
+
+        public int CardId { get; set; }
     }
 }

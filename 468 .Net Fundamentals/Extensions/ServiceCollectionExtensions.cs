@@ -26,7 +26,6 @@ namespace _468_.Net_Fundamentals.Extensions
             services.AddScoped<Func<ApplicationDbContext>>((provider) => () => provider.GetService<ApplicationDbContext>());
 
             services.AddScoped<IUnitOfWork, UnitOfWorkBase>();
-            /*services.AddScoped<Func<ApplicationDbContext>>((provider) => () => provider.GetService<ApplicationDbContext>());*/
 
 
             return services;
@@ -35,18 +34,16 @@ namespace _468_.Net_Fundamentals.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             return services
-                .AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>))
-                .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<ICardRepository, CardRepository>();
+                .AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>)); 
         }
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             return services
                 .AddScoped<ICardService, CardService>()
-                .AddScoped<IUserService, UserService>()
-                .AddScoped<IProjectService, ProjectService>();
-
+                .AddScoped<IProjectService, ProjectService>()
+                .AddScoped<ITodoService, TodoService>()
+                .AddScoped<ITagService, TagService>();
         }
     }
 }

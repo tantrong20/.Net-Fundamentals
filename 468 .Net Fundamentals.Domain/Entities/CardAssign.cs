@@ -7,13 +7,12 @@ using System.Text;
 namespace _468_.Net_Fundamentals.Domain.Entities
 {
     [Table("CardAssign")]
-    public class CardAssign : EntityBase<int>
+    public class CardAssign
     {
 
-        public int? CardId { get; set; }
+        public int CardId { get; set; }
 
-
-        public int? AssignTo { get; set; }
+        public int AssignTo { get; set; }
 
         public virtual Card Card { get; set; }
 

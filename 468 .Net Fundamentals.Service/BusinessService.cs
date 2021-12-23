@@ -6,33 +6,35 @@ using _468_.Net_Fundamentals.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class ProjectService : RepositoryBase<Project>, IProjectService
+    public class BusinessService : RepositoryBase<Business>, IBusinessService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProjectService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public BusinessService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(ProjectCreateVM request)
+        // Business
+
+        public async Task CreateBusiness(BusinessVM request)
         {
             try
             {
                 await _unitOfWork.BeginTransaction();
 
-                var userLogin = await _unitOfWork.Repository<User>().FindAsync(1);
-
-                var project = new Project
+                var business = new Business
                 {
                     Name = request.Name,
-                    CreatedBy = userLogin.Id,
+                    ProjectId = request.ProjectId
                 };
 
-                await _unitOfWork.Repository<Project>().InsertAsync(project);
+                await _unitOfWork.Repository<Business>().InsertAsync(business);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -42,58 +44,55 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
-        public async Task<ProjectVM> Get(int id)
+        public async Task<IList<BusinessVM>> GetAllBusiness(int projectId)
         {
-            var project = await _unitOfWork.Repository<Project>().FindAsync(id);
+            var allBusiness = await _unitOfWork.Repository<Business>().GetAllAsync();
 
-        
-            var projectVM = new ProjectVM
+            var businesses = from business in allBusiness where business.ProjectId == projectId select business;
+
+            var businessesVM = new List<BusinessVM>();
+
+            foreach(var b in businesses)
             {
-                Id = project.Id,
-                Name = project.Name,
-                CreatedBy = project.CreatedBy,
+                businessesVM.Add( new BusinessVM { Name = b.Name, ProjectId = b.ProjectId });
+            }
+
+            return businessesVM;
+        }
+
+        public async Task UpdateBusiness(int id, string name)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+
+                var business = await _unitOfWork.Repository<Business>().FindAsync(id);
+                business.Name = name;
+
+                await _unitOfWork.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
             };
-
-            return projectVM;
         }
 
-        public async Task<IList<Project>> GetAll()
-        {
-            return await _unitOfWork.Repository<Project>().GetAllAsync();
-        }
-
-        public async Task Update(int id, string name)
+        public async Task DeleteBusiness(int id)
         {
             try
             {
                 await _unitOfWork.BeginTransaction();
 
-                var project = await _unitOfWork.Repository<Project>().FindAsync(id);
-                project.Name = name;
+                await _unitOfWork.Repository<Business>().DeleteAsync(id);
 
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
-            }
+            };
         }
-        public async Task Delete(int id)
-        {
-            try
-            {
-                await _unitOfWork.BeginTransaction();
 
-                await _unitOfWork.Repository<Project>().DeleteAsync(id);
-              
-                await _unitOfWork.CommitTransaction();
-            }
-            catch (Exception e)
-            {
-                await _unitOfWork.RollbackTransaction();
-            }
-        }
-        
-       
+    
     }
 }

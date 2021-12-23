@@ -18,9 +18,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task Create([FromBody] ProjectCreateRequest projectCreateVM)
+        public async Task Create([FromBody] ProjectCreateVM request)
         {
-            await _projectService.Create(projectCreateVM);
+            await _projectService.Create(request);
         }
 
         [HttpGet]
@@ -29,47 +29,24 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _projectService.GetAll();
         }
 
-        [HttpGet("id")]
-        public async Task<ProjectDetailsVM> Get(int id)
+        [HttpGet("{id}")]
+        public async Task<ProjectVM> Get(int id)
         {
             return await _projectService.Get(id);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] string name)
         {
             await _projectService.Update(id, name);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
             await _projectService.Delete(id);
         }
 
-        // Business
-
-        [Route("id/Business")]
-        [HttpPost]
-        public async Task CreateBusiness(int id, [FromBody] BusinessCreateRequest request)
-        {
-            await _projectService.CreateBusiness(id, request);
-        }
-
-        [Route("id/Business/busId")]
-        [HttpPut]
-        public async Task UpdateBusiness(int busId, [FromBody] string name)
-        {
-            await _projectService.UpdateBusiness(busId, name);
-        }
-
-        [Route("id/Business/busId")]
-        [HttpDelete]
-        public async Task DeleteBusiness(int busId)
-        {
-            await _projectService.DeleteBusiness(busId);
-        }
-
-
+        
     }
 }

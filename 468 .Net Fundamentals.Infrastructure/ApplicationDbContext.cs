@@ -32,8 +32,10 @@ namespace _468_.Net_Fundamentals.Infrastructure
             builder.Entity<User>().HasData(users);
 
 
-            builder.Entity<ProjectMember>()
-                .HasKey(pm => new { pm.MemberId, pm.ProjectId });
+
+
+            //ProjectMember
+            builder.Entity<ProjectMember>().HasKey(pm => new { pm.MemberId, pm.ProjectId });
             builder.Entity<ProjectMember>()
                 .HasOne(pm => pm.User)
                 .WithMany()
@@ -42,11 +44,11 @@ namespace _468_.Net_Fundamentals.Infrastructure
             builder.Entity<ProjectMember>()
                 .HasOne(pm => pm.Project)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(pm => pm.ProjectId);
 
-            builder.Entity<CardAssign>()
-               .HasKey(ca => new { ca.AssignTo, ca.CardId });
+            // CardAssign
+            builder.Entity<CardAssign>().HasKey(ca => new { ca.CardId, ca.AssignTo});
             builder.Entity<CardAssign>()
                 .HasOne(ca => ca.Card)
                 .WithMany()
@@ -57,6 +59,20 @@ namespace _468_.Net_Fundamentals.Infrastructure
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(ca => ca.AssignTo);
+
+            // CardTag
+            builder.Entity<CardTag>().HasKey(ct => new { ct.CardId, ct.TagId });
+            builder.Entity<CardTag>()
+                .HasOne(ct => ct.Card)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasForeignKey(ct => ct.CardId);
+            builder.Entity<CardTag>()
+                .HasOne(ct => ct.Tag)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasForeignKey(ct => ct.TagId);
+
         }
 
         public DbSet<User> Users { get; set; }
@@ -64,9 +80,12 @@ namespace _468_.Net_Fundamentals.Infrastructure
         public DbSet<Business> Businesses { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<CardAssign> CardAssigns { get; set; }
+        public DbSet<CardTag> CardTags { get; set; }
+
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Todo> Todos { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
+
 
     }
 }

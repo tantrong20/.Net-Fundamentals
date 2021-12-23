@@ -4,7 +4,7 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class BusinessCreateRequest
+    public class ProjectCreateVM
     {
         public string Name { get; set; }
     }

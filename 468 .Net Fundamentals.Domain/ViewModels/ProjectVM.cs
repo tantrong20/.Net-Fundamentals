@@ -5,7 +5,7 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class ProjectDetailsVM
+    public class ProjectVM
     {
         public int Id { get; set; }
 
