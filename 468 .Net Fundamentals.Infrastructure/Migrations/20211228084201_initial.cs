@@ -208,12 +208,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 1, 1, new DateTime(2021, 12, 23, 11, 11, 13, 933, DateTimeKind.Local).AddTicks(4102), "Project 1" });
+                values: new object[] { 1, 1, new DateTime(2021, 12, 28, 15, 42, 0, 809, DateTimeKind.Local).AddTicks(2446), "Project 1" });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 2, 2, new DateTime(2021, 12, 23, 11, 11, 13, 934, DateTimeKind.Local).AddTicks(9910), "Project 2" });
+                values: new object[] { 2, 2, new DateTime(2021, 12, 28, 15, 42, 0, 810, DateTimeKind.Local).AddTicks(3398), "Project 2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",

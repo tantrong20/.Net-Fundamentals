@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers
 {
-    [Route("api/business")]
+    [Route("api/businesses")]
     [ApiController]
     public class BusinessesController : ControllerBase
     {
@@ -19,34 +19,31 @@ namespace _468_.Net_Fundamentals.Controllers
             _businessService = businessService;
         }
 
-
-        // Business
-
         [HttpPost]
-        public async Task CreateBusiness([FromBody] BusinessVM request)
+        public async Task Create([FromBody] BusinessVM request)
         {
-            await _businessService.CreateBusiness(request);
+            await _businessService.Create(request);
         }
 
         [HttpGet]
-        public async Task<IList<BusinessVM>> GetAllBusiness(int projectId)
+        public async Task<IList<BusinessVM>> GetAllByProject(int projectId)
         {
-            return await _businessService.GetAllBusiness(projectId);
+            return await _businessService.GetAllByProject(projectId);
         }
 
 
         [Route("{id}")]
         [HttpPut]
-        public async Task UpdateBusiness(int id, [FromBody] string name)
+        public async Task Update(int id, [FromBody] string name)
         {
-            await _businessService.UpdateBusiness(id, name);
+            await _businessService.Update(id, name);
         }
 
         [Route("{id}")]
         [HttpDelete]
-        public async Task DeleteBusiness(int id)
+        public async Task Delete(int id)
         {
-            await _businessService.DeleteBusiness(id);
+            await _businessService.Delete(id);
         }
 
 

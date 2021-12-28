@@ -13,8 +13,6 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         public string Name { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Created On")]
         public DateTime CreatedOn { get; set; }
 

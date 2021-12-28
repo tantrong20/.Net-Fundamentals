@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using _468_.Net_Fundamentals.Domain.EnumType;
 
 namespace _468_.Net_Fundamentals.Service
 {
@@ -45,10 +46,8 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
-        public async Task<IList<CardVM>> GetAll(int busId)
+        public async Task<IList<CardVM>> GetAllByBusiness(int busId)
         {
-            //var cardVMs = new List<CardVM>();
-
             var cardVMs = await _unitOfWork.Repository<Card>()
                 .Query()
                 .Where(_ => _.BusinessId == busId)
@@ -62,29 +61,11 @@ namespace _468_.Net_Fundamentals.Service
                     BusinessId = card.BusinessId,
                 })
                 .ToListAsync();
-            // IQueryable, Ienumberable, ICOllection. || Projection
-            // Query syntax || method syntax
-
-            //var cards = from card in allcard where card.BusinessId == busId select card;
-
-            //foreach(var card in cards)
-            //{
-            //    var cardVM = new CardVM
-            //    {
-            //        /*Id = card.Id,*/
-            //        Name = card.Name,
-            //        Description = card.Description,
-            //        Duedate = card.Duedate,
-            //        Priority = card.Priority,
-            //        BusinessId = card.BusinessId,
-            //    };
-            //    cardVMs.Add(cardVM);
-            //}
 
             return cardVMs;
         }
 
-        public async Task<CardVM> Get(int id)
+        public async Task<CardVM> GetDetail(int id)
         {
             var cardVM = await _unitOfWork.Repository<Card>()
                 .Query()
@@ -99,86 +80,80 @@ namespace _468_.Net_Fundamentals.Service
                     BusinessId = card.BusinessId,
                 }).FirstOrDefaultAsync();
 
-           /* var cardVM = new CardVM
-            {
-                Id = card.Id,
-                Name = card.Name,
-                Description = card.Description,
-                Duedate = card.Duedate,
-                Priority = card.Priority,
-                BusinessId = card.BusinessId,
-            };*/
-
             return cardVM;
         }
 
-        public async Task Update(int id, CardVM cardVM)
-        {
-            try
-            {
-                var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+         public async Task Delete(int id)
+        {   
+            await _unitOfWork.Repository<Card>().DeleteAsync(id);
 
-                card.Name = cardVM.Name;
-                card.Description = cardVM.Description;
-                card.Duedate = cardVM.Duedate;
-                card.Priority = cardVM.Priority;
-
-                if (cardVM.BusinessId > 0)
-                {
-                    card.BusinessId = cardVM.BusinessId;
-
-                }
-
-                await _unitOfWork.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                await _unitOfWork.RollbackTransaction();
-            }
+            await _unitOfWork.SaveChangesAsync();    
         }
 
-        public async Task Delete(int id)
+        public async Task UpdateName(int id, string newName)
         {
-            try
-            {
-                await _unitOfWork.BeginTransaction();
+            var card =  await _unitOfWork.Repository<Card>().FindAsync(id);
 
-                await _unitOfWork.Repository<Card>().DeleteAsync(id);
+            card.Name = newName;
 
-                await _unitOfWork.CommitTransaction();
-            }
-            catch (Exception e)
-            {
-                await _unitOfWork.RollbackTransaction();
-            }
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        //CardTag
-        public async Task AddTag(int id, int tagId)
+        public async Task UpdatePriority(int id, TaskPriority newPriority)
         {
-            try
-            {
-                await _unitOfWork.BeginTransaction();
-                var card =  await _unitOfWork.Repository<Card>().FindAsync(id);
-                var tag = await _unitOfWork.Repository<Tag>().FindAsync(tagId);
+            var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
-                var cardTag = new CardTag
-                {
-                    Card = card,
-                    Tag = tag
-                };
+            card.Priority = newPriority;
 
-                await _unitOfWork.Repository<CardTag>().InsertAsync(cardTag);
-
-                await _unitOfWork.CommitTransaction();
-            }
-            catch (Exception e)
-            {
-                await _unitOfWork.RollbackTransaction();
-            }
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task DeleteTag(int id, int tagId)
+        public async Task UpdateBusiness(int id, int newBusinessId)
+        {
+            var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+
+            card.BusinessId = newBusinessId;
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpdateDescription(int id, string newDescription)
+        {
+            var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+
+            card.Description = newDescription;
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpdateDuedate(int id, DateTime newDuedate)
+        {
+            var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+
+            card.Duedate = newDuedate;
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        // TAG
+
+        public async Task AddTagOnCard(int id, int tagId)
+        {
+            var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+            var tag = await _unitOfWork.Repository<Tag>().FindAsync(tagId);
+
+            var cardTag = new CardTag
+            {
+                Card = card,
+                Tag = tag
+            };
+
+            await _unitOfWork.Repository<CardTag>().InsertAsync(cardTag);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task DeleteTagOnCard(int id, int tagId)
         {
             try
             {
@@ -188,8 +163,6 @@ namespace _468_.Net_Fundamentals.Service
                     .Query()
                     .Where(_ => _.CardId == id && _.TagId == tagId)
                     .FirstOrDefaultAsync();
-
-                var tag = await _unitOfWork.Repository<Tag>().FindAsync(tagId);
 
                 await _unitOfWork.Repository<CardTag>().DeleteAsync(cardTag);
 
@@ -201,9 +174,20 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
-        public Task<IList<CardTag>> GetAllTag()
+        public async Task<IList<CardTagVM>> GetAllTagOnCard(int id)
         {
-            throw new NotImplementedException();
+            var cardTagVMs = await _unitOfWork.Repository<CardTag>()
+                    .Query()
+                    .Where(_ => _.CardId == id)
+                    .Select(cardTag => new CardTagVM
+                    {
+                        CardId = cardTag.CardId,
+                        TagId = cardTag.TagId,
+                        TagName = cardTag.Tag.Name
+                    })
+                    .ToListAsync();
+
+            return cardTagVMs;
         }
     }
 }

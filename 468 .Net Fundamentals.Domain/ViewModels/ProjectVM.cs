@@ -13,6 +13,5 @@ namespace _468_.Net_Fundamentals.Domain.ViewModels
 
         public int CreatedBy { get; set; }
 
-        public IList<BusinessVM> Businesses { get; set; }
     }
 } 

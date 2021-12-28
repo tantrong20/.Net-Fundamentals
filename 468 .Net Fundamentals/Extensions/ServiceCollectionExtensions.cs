@@ -43,7 +43,9 @@ namespace _468_.Net_Fundamentals.Extensions
                 .AddScoped<ICardService, CardService>()
                 .AddScoped<IProjectService, ProjectService>()
                 .AddScoped<ITodoService, TodoService>()
-                .AddScoped<ITagService, TagService>();
+                .AddScoped<ITagService, TagService>()
+                .AddScoped<IBusinessService, BusinessService>();
+
         }
     }
 }

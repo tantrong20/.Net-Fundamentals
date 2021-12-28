@@ -129,14 +129,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 23, 11, 11, 13, 933, DateTimeKind.Local).AddTicks(4102),
+                            CreatedOn = new DateTime(2021, 12, 28, 15, 42, 0, 809, DateTimeKind.Local).AddTicks(2446),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 23, 11, 11, 13, 934, DateTimeKind.Local).AddTicks(9910),
+                            CreatedOn = new DateTime(2021, 12, 28, 15, 42, 0, 810, DateTimeKind.Local).AddTicks(3398),
                             Name = "Project 2"
                         });
                 });
@@ -252,7 +252,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", "Business")
-                        .WithMany("Cards")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

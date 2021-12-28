@@ -23,7 +23,7 @@ namespace _468_.Net_Fundamentals.Service
 
         // Business
 
-        public async Task CreateBusiness(BusinessVM request)
+        public async Task Create(BusinessVM request)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
-        public async Task<IList<BusinessVM>> GetAllBusiness(int projectId)
+        public async Task<IList<BusinessVM>> GetAllByProject(int projectId)
         {
             var businessesVM = await _unitOfWork.Repository<Business>()
                 .Query()
@@ -57,19 +57,10 @@ namespace _468_.Net_Fundamentals.Service
                 })
                 .ToListAsync();
 
-         /*   var businesses = from business in allBusiness where business.ProjectId == projectId select business;
-
-            var businessesVM = new List<BusinessVM>();
-
-            foreach(var b in businesses)
-            {
-                businessesVM.Add( new BusinessVM { Name = b.Name, ProjectId = b.ProjectId });
-            }*/
-
             return businessesVM;
         }
 
-        public async Task UpdateBusiness(int id, string name)
+        public async Task Update(int id, string name)
         {
             try
             {
@@ -86,7 +77,7 @@ namespace _468_.Net_Fundamentals.Service
             };
         }
 
-        public async Task DeleteBusiness(int id)
+        public async Task Delete(int id)
         {
             try
             {

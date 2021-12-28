@@ -1,4 +1,5 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using System;
@@ -11,14 +12,19 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     public interface ICardService
     {
         public Task Create(CardCreateVM request);
-        public Task<IList<CardVM>> GetAll(int busId);
-        public Task<CardVM> Get(int id);
-        public Task Update(int id, CardVM cardVM);
+        public Task<IList<CardVM>> GetAllByBusiness(int busId);
+        public Task<CardVM> GetDetail(int id);
         public Task Delete(int id);
-        public Task AddTag(int id, int tagId);
-        public Task DeleteTag(int id, int tagId);
-        public Task<IList<CardTag>> GetAllTag();
 
 
+        public Task UpdateName(int id, string newName);
+        public Task UpdatePriority(int id, TaskPriority newPriority);
+        public Task UpdateBusiness(int id, int newBusinessId);
+        public Task UpdateDescription(int id, string newDescription);
+        public Task UpdateDuedate(int id, DateTime newDuedate);
+
+        public Task AddTagOnCard(int id, int tagId);
+        public Task DeleteTagOnCard(int id, int tagId);
+        public Task<IList<CardTagVM>> GetAllTagOnCard(int id);
     }
 }
