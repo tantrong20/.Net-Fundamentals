@@ -3,6 +3,7 @@ using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,16 +42,23 @@ namespace _468_.Net_Fundamentals.Service
         }
         public async Task<IList<TagVM>> GetAll(int projectId)
         {
-            var allTags = await _unitOfWork.Repository<Tag>().GetAllAsync();
+            var tagsVM = await _unitOfWork.Repository<Tag>()
+                .Query()
+                .Where(_ => _.ProjectId == projectId)
+                .Select(t => new TagVM {
+                    Id = t.Id,
+                    Name = t.Name,
+                    ProjectId = t.ProjectId
+                }).ToListAsync();
 
-            var tags = from tag in allTags where tag.ProjectId == projectId select tag;
+           /* var tags = from tag in allTags where tag.ProjectId == projectId select tag;
 
             var tagsVM = new List<TagVM>();
 
             foreach(var t in tags)
             {
                 tagsVM.Add(new TagVM { Id = t.Id, Name = t.Name, ProjectId = t.ProjectId });
-            }
+            }*/
 
             return tagsVM;
         }

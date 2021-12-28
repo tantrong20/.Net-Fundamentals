@@ -45,8 +45,7 @@ namespace _468_.Net_Fundamentals.Service
         public async Task<ProjectVM> Get(int id)
         {
             var project = await _unitOfWork.Repository<Project>().FindAsync(id);
-
-        
+       
             var projectVM = new ProjectVM
             {
                 Id = project.Id,

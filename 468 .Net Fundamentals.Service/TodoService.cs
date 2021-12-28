@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace _468_.Net_Fundamentals.Service
 {
@@ -48,16 +48,22 @@ namespace _468_.Net_Fundamentals.Service
         public async Task<IList<TodoVM>> GetAll(int cardId)
         {
 
-            var alltodo = await _unitOfWork.Repository<Todo>().GetAllAsync();
+            var todoVMs = await _unitOfWork.Repository<Todo>()
+                .Query()
+                .Where(_ => _.CardId == cardId)
+                .Select(todo => new TodoVM {
+                    Name = todo.Name,
+                    CardId = todo.CardId
+                }).ToListAsync();
 
-            var todos = from todo in alltodo where todo.CardId == cardId select todo;
+            /*var todos = from todo in alltodo where todo.CardId == cardId select todo;
 
             var todoVMs = new List<TodoVM>();
 
             foreach (var todo in todos)
             {
                 todoVMs.Add(new TodoVM { Name = todo.Name, CardId = todo.CardId });
-            }
+            }*/
 
             return todoVMs;
         }

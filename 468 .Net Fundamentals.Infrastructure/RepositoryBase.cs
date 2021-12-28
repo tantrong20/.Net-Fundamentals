@@ -24,6 +24,11 @@ namespace _468_.Net_Fundamentals.Infrastructure
             return await Entities.ToListAsync();
         }
 
+        public  IQueryable<T> Query()
+        {
+            return  Entities.AsQueryable();
+        }
+
         public T Find(params object[] keyValues)
         {
             return Entities.Find(keyValues);

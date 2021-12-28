@@ -9,6 +9,7 @@ using System.Text;
 using System.Linq;
 
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace _468_.Net_Fundamentals.Service
 {
@@ -46,16 +47,24 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IList<BusinessVM>> GetAllBusiness(int projectId)
         {
-            var allBusiness = await _unitOfWork.Repository<Business>().GetAllAsync();
+            var businessesVM = await _unitOfWork.Repository<Business>()
+                .Query()
+                .Where(_ => _.ProjectId == projectId)
+                .Select(b => new BusinessVM
+                {
+                    Name = b.Name,
+                    ProjectId = b.ProjectId
+                })
+                .ToListAsync();
 
-            var businesses = from business in allBusiness where business.ProjectId == projectId select business;
+         /*   var businesses = from business in allBusiness where business.ProjectId == projectId select business;
 
             var businessesVM = new List<BusinessVM>();
 
             foreach(var b in businesses)
             {
                 businessesVM.Add( new BusinessVM { Name = b.Name, ProjectId = b.ProjectId });
-            }
+            }*/
 
             return businessesVM;
         }
