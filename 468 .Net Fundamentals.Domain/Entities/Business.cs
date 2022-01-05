@@ -15,7 +15,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [ForeignKey("ProjectId")]      
         public virtual Project Project { get; set; }
 
-      /*  public virtual IList<Card> Cards { get; set; }*/
+        public virtual IList<Card> Cards { get; set; }
 
     }
 }

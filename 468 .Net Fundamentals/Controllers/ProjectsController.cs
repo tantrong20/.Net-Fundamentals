@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers
 {
-    [Route("api/Project")]
+    [Route("api/project")]
     [ApiController]
     public class ProjectsController : ControllerBase
     {
@@ -18,13 +18,13 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task Create([FromBody] ProjectCreateVM request)
+        public async Task<int> Create([FromBody] string name)
         {
-            await _projectService.Create(request);
+            return await _projectService.Create(name);
         }
 
         [HttpGet]
-        public async Task<IList<Project>> GetAll()
+        public async Task<IList<ProjectVM>> GetAll()
         {
             return await _projectService.GetAll();
         }

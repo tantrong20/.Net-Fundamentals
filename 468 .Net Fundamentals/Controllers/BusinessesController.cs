@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers
 {
-    [Route("api/businesses")]
+    [Route("api/project/{projectId}/businesses")]
     [ApiController]
     public class BusinessesController : ControllerBase
     {
@@ -20,9 +20,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task Create([FromBody] BusinessVM request)
+        public async Task Create(int projectId, [FromBody] string name)
         {
-            await _businessService.Create(request);
+            await _businessService.Create(projectId, name);
         }
 
         [HttpGet]

@@ -58,6 +58,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<DateTime?>("Duedate")
                         .HasColumnType("datetime2");
 
+                    b.Property<float>("Index")
+                        .HasColumnType("real");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -129,14 +132,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2021, 12, 28, 15, 42, 0, 809, DateTimeKind.Local).AddTicks(2446),
+                            CreatedOn = new DateTime(2022, 1, 5, 15, 52, 13, 920, DateTimeKind.Local).AddTicks(352),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2021, 12, 28, 15, 42, 0, 810, DateTimeKind.Local).AddTicks(3398),
+                            CreatedOn = new DateTime(2022, 1, 5, 15, 52, 13, 921, DateTimeKind.Local).AddTicks(1298),
                             Name = "Project 2"
                         });
                 });
@@ -252,7 +255,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", "Business")
-                        .WithMany()
+                        .WithMany("Cards")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

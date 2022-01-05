@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers
 {
-    [Route("api/cards")]
+    [Route("api/business/{busId}/cards")]
     [ApiController]
     public class CardsController : ControllerBase
     {
@@ -21,9 +21,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task Create([FromBody] CardCreateVM request)
+        public async Task Create(int busId, [FromBody] string name)
         {
-            await _cardService.Create(request);
+            await _cardService.Create(busId, name);
         }
 
 

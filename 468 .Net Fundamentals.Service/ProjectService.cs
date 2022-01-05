@@ -3,8 +3,10 @@ using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,27 +20,29 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(ProjectCreateVM request)
+        public async Task<int> Create(string name)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
+                /*await _unitOfWork.BeginTransaction();*/
 
                 var userLogin = await _unitOfWork.Repository<User>().FindAsync(1);
 
                 var project = new Project
                 {
-                    Name = request.Name,
+                    Name = name,
                     CreatedBy = userLogin.Id,
                 };
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
+                await _unitOfWork.SaveChangesAsync();
 
-                await _unitOfWork.CommitTransaction();
+                return 1;
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                return 0;
             }
         }
 
@@ -56,9 +60,19 @@ namespace _468_.Net_Fundamentals.Service
             return projectVM;
         }
 
-        public async Task<IList<Project>> GetAll()
+        public async Task<IList<ProjectVM>> GetAll()
         {
-            return await _unitOfWork.Repository<Project>().GetAllAsync();
+            var projectVMs = await _unitOfWork.Repository<Project>()
+                        .Query()
+                        .Where(_ => _.CreatedBy == 1)
+                        .Select(project => new ProjectVM
+                        {
+                            Id = project.Id,
+                            Name = project.Name,
+                            CreatedBy = project.CreatedBy
+                        })
+                        .ToListAsync();
+            return projectVMs;
         }
 
         public async Task Update(int id, string name)
@@ -81,11 +95,9 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 await _unitOfWork.Repository<Project>().DeleteAsync(id);
               
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {

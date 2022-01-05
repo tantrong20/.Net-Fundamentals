@@ -20,6 +20,14 @@ namespace _468_.Net_Fundamentals
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // allow acces to API
+            services.AddCors(options => options.AddPolicy("AllowAccess_To_API",
+                policy => policy
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                ));
+
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
                       options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -44,6 +52,10 @@ namespace _468_.Net_Fundamentals
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors( "AllowAccess_To_API"
+               /*  options => options.WithOrigins("http://localhost:4200").AllowAnyMethod()*/
+             );
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

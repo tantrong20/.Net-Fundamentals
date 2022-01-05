@@ -21,23 +21,18 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        // Business
-
-        public async Task Create(BusinessVM request)
+        public async Task Create(int projectId, string name)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 var business = new Business
                 {
-                    Name = request.Name,
-                    ProjectId = request.ProjectId
+                    Name = name,
+                    ProjectId = projectId
                 };
 
                 await _unitOfWork.Repository<Business>().InsertAsync(business);
-
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -52,6 +47,7 @@ namespace _468_.Net_Fundamentals.Service
                 .Where(_ => _.ProjectId == projectId)
                 .Select(b => new BusinessVM
                 {
+                    Id = b.Id,
                     Name = b.Name,
                     ProjectId = b.ProjectId
                 })

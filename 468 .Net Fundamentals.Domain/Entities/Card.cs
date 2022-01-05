@@ -18,11 +18,13 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public DateTime? Duedate { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public TaskPriority? Priority { get; set; }
 
         public int BusinessId { get; set; }
+
+        public float Index { get; set; }
 
 
         [ForeignKey("BusinessId")]

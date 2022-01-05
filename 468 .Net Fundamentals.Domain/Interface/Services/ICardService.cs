@@ -11,7 +11,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface ICardService
     {
-        public Task Create(CardCreateVM request);
+        public Task Create(int busId, string name);
         public Task<IList<CardVM>> GetAllByBusiness(int busId);
         public Task<CardVM> GetDetail(int id);
         public Task Delete(int id);

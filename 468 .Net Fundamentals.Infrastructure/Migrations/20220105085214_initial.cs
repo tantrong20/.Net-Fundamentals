@@ -117,7 +117,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Duedate = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Priority = table.Column<int>(nullable: true),
-                    BusinessId = table.Column<int>(nullable: false)
+                    BusinessId = table.Column<int>(nullable: false),
+                    Index = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -208,12 +209,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 1, 1, new DateTime(2021, 12, 28, 15, 42, 0, 809, DateTimeKind.Local).AddTicks(2446), "Project 1" });
+                values: new object[] { 1, 1, new DateTime(2022, 1, 5, 15, 52, 13, 920, DateTimeKind.Local).AddTicks(352), "Project 1" });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 2, 2, new DateTime(2021, 12, 28, 15, 42, 0, 810, DateTimeKind.Local).AddTicks(3398), "Project 2" });
+                values: new object[] { 2, 2, new DateTime(2022, 1, 5, 15, 52, 13, 921, DateTimeKind.Local).AddTicks(1298), "Project 2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",

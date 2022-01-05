@@ -22,23 +22,27 @@ namespace _468_.Net_Fundamentals.Service
         }
 
 
-        public async Task Create(CardCreateVM request)
+        public async Task Create(int busId, string name)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
 
-                var business = await _unitOfWork.Repository<Business>().FindAsync(request.BusId);
-                                
-                var card = new Card
-                {
-                    Name = request.Name,
-                    Business = business
-                };
+                var card = await _unitOfWork.Repository<Business>()
+                    .Query()
+                    .Where(_ => _.Id == busId)
+                    .Select(bus => new Card
+                    {
+                        Name = name,
+                        BusinessId = bus.Id,                        
+                        Index = bus.Cards.Count > 0 ? bus.Cards[bus.Cards.Count -1].Index + 1 : 1
+
+                    })
+                    .FirstOrDefaultAsync();
+        
+          
                 await _unitOfWork.Repository<Card>().InsertAsync(card);
-                               
-                
-                await _unitOfWork.CommitTransaction();
+                                     
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e) 
             {
@@ -53,12 +57,13 @@ namespace _468_.Net_Fundamentals.Service
                 .Where(_ => _.BusinessId == busId)
                 .Select(card => new CardVM
                 {
-                    /*Id = card.Id,*/
+                    Id = card.Id,
                     Name = card.Name,
                     Description = card.Description,
                     Duedate = card.Duedate,
                     Priority = card.Priority,
                     BusinessId = card.BusinessId,
+                    Index = card.Index
                 })
                 .ToListAsync();
 
@@ -78,6 +83,8 @@ namespace _468_.Net_Fundamentals.Service
                     Duedate = card.Duedate,
                     Priority = card.Priority,
                     BusinessId = card.BusinessId,
+                    Index = card.Index
+
                 }).FirstOrDefaultAsync();
 
             return cardVM;
