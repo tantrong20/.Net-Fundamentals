@@ -66,7 +66,7 @@ namespace _468_.Net_Fundamentals.Controllers
         [HttpPut("{id}/description")]
         public async Task UpdateDescription(int id, [FromBody] string newDescription)
         {
-            await _cardService.UpdateName(id, newDescription);
+            await _cardService.UpdateDescription(id, newDescription);
         }
 
         [HttpPut("{id}/duedate")]
