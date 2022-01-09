@@ -11,7 +11,7 @@ namespace _468_.Net_Fundamentals.Domain.ViewModels
         public string Name { get; set; }
         public DateTime? Duedate { get; set; }
         public string Description { get; set; }
-        public TaskPriority? Priority { get; set; }
+        public TaskPriority Priority { get; set; }
         public int BusinessId { get; set; }
         public float Index { get; set; }
 

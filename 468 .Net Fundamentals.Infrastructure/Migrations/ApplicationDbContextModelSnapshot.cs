@@ -64,7 +64,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Priority")
+                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -132,14 +132,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2022, 1, 8, 11, 15, 30, 273, DateTimeKind.Local).AddTicks(7541),
+                            CreatedOn = new DateTime(2022, 1, 9, 20, 37, 12, 25, DateTimeKind.Local).AddTicks(2011),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2022, 1, 8, 11, 15, 30, 276, DateTimeKind.Local).AddTicks(3142),
+                            CreatedOn = new DateTime(2022, 1, 9, 20, 37, 12, 26, DateTimeKind.Local).AddTicks(2963),
                             Name = "Project 2"
                         });
                 });

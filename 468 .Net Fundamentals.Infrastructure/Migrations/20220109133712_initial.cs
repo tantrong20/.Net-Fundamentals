@@ -117,7 +117,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     Duedate = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    Priority = table.Column<int>(nullable: true),
+                    Priority = table.Column<int>(nullable: false),
                     BusinessId = table.Column<int>(nullable: false),
                     Index = table.Column<float>(nullable: false)
                 },
@@ -200,22 +200,22 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Email", "ImagePath", "Name", "Role" },
-                values: new object[] { 1, "tronglt2001@gmail.com", null, "Tan Trong", 1 });
+                values: new object[] { 1, "tronglt2001@gmail.com", "https://lh6.googleusercontent.com/X7JYEBXkxFMLWlXgsipqGbOYN6j9Lh_83FdKL-WPAtVKZsNnwrEE-VJVR83IXO73jgq4NrVuwPER2JVgkuyIpFMDMLzN3kbY1uHnD2_5enIx52yB-0IWf_VIfgFcpQBb4Yp3-an0", "Tan Trong", 1 });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Email", "ImagePath", "Name", "Role" },
-                values: new object[] { 2, "hiennhu@gmail.com", null, "Hien Nhu", 1 });
+                values: new object[] { 2, "hiennhu@gmail.com", "https://i.pinimg.com/474x/15/06/df/1506df6aa1b4c6a8162683d7e8114e65.jpg", "Hien Nhu", 1 });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 1, 1, new DateTime(2022, 1, 8, 11, 11, 20, 868, DateTimeKind.Local).AddTicks(2011), "Project 1" });
+                values: new object[] { 1, 1, new DateTime(2022, 1, 9, 20, 37, 12, 25, DateTimeKind.Local).AddTicks(2011), "Project 1" });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 2, 2, new DateTime(2022, 1, 8, 11, 11, 20, 869, DateTimeKind.Local).AddTicks(2848), "Project 2" });
+                values: new object[] { 2, 2, new DateTime(2022, 1, 9, 20, 37, 12, 26, DateTimeKind.Local).AddTicks(2963), "Project 2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",

@@ -22,10 +22,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
         public Task UpdatePriority(int id, TaskPriority newPriority);
         public Task UpdateBusiness(int id, int newBusinessId);
         public Task UpdateDescription(int id, string newDescription);
-        public Task UpdateDuedate(int id, DateTime newDuedate);
+        public Task UpdateDuedate(int id, string newDuedate);
 
-        public Task AddTagOnCard(int id, int tagId);
-        public Task DeleteTagOnCard(int id, int tagId);
-        public Task<IList<CardTagVM>> GetAllTagOnCard(int id);
     }
 }

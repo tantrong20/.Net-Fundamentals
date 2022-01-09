@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220108041121_initial")]
+    [Migration("20220109133712_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,7 +66,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Priority")
+                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -134,14 +134,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2022, 1, 8, 11, 11, 20, 868, DateTimeKind.Local).AddTicks(2011),
+                            CreatedOn = new DateTime(2022, 1, 9, 20, 37, 12, 25, DateTimeKind.Local).AddTicks(2011),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2022, 1, 8, 11, 11, 20, 869, DateTimeKind.Local).AddTicks(2848),
+                            CreatedOn = new DateTime(2022, 1, 9, 20, 37, 12, 26, DateTimeKind.Local).AddTicks(2963),
                             Name = "Project 2"
                         });
                 });
@@ -236,6 +236,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             Email = "tronglt2001@gmail.com",
+                            ImagePath = "https://lh6.googleusercontent.com/X7JYEBXkxFMLWlXgsipqGbOYN6j9Lh_83FdKL-WPAtVKZsNnwrEE-VJVR83IXO73jgq4NrVuwPER2JVgkuyIpFMDMLzN3kbY1uHnD2_5enIx52yB-0IWf_VIfgFcpQBb4Yp3-an0",
                             Name = "Tan Trong",
                             Role = 1
                         },
@@ -243,6 +244,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 2,
                             Email = "hiennhu@gmail.com",
+                            ImagePath = "https://i.pinimg.com/474x/15/06/df/1506df6aa1b4c6a8162683d7e8114e65.jpg",
                             Name = "Hien Nhu",
                             Role = 1
                         });

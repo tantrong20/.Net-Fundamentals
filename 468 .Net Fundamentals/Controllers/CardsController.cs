@@ -70,7 +70,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPut("{id}/duedate")]
-        public async Task UpdateDuedate(int id, [FromBody] DateTime newDuedate)
+        public async Task UpdateDuedate(int id, [FromBody] string newDuedate)
         {
             await _cardService.UpdateDuedate(id, newDuedate);
         }
@@ -81,22 +81,6 @@ namespace _468_.Net_Fundamentals.Controllers
             await _cardService.Delete(id);
         }
 
-        [HttpPost("{id}/tags/{tagId}")]
-        public async Task AddTag(int id, int tagId)
-        {
-            await _cardService.AddTagOnCard(id, tagId);
-        }
-
-        [HttpDelete("{id}/tags/{tagId}")]
-        public async Task DeleteTag(int id, int tagId)
-        {
-            await _cardService.DeleteTagOnCard(id, tagId);
-        }
-
-        [HttpGet("{id}/tags")]
-        public async Task<IList<CardTagVM>> GetAllTag(int id)
-        {
-            return await _cardService.GetAllTagOnCard(id);
-        }
+       
     }
 }
