@@ -15,6 +15,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 50, nullable: true),
                     Email = table.Column<string>(nullable: true),
+                    ImagePath = table.Column<string>(nullable: true),
                     Role = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -198,23 +199,23 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "Email", "Name", "Role" },
-                values: new object[] { 1, "tronglt2001@gmail.com", "Tan Trong", 1 });
+                columns: new[] { "Id", "Email", "ImagePath", "Name", "Role" },
+                values: new object[] { 1, "tronglt2001@gmail.com", null, "Tan Trong", 1 });
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "Email", "Name", "Role" },
-                values: new object[] { 2, "hiennhu@gmail.com", "Hien Nhu", 1 });
+                columns: new[] { "Id", "Email", "ImagePath", "Name", "Role" },
+                values: new object[] { 2, "hiennhu@gmail.com", null, "Hien Nhu", 1 });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 1, 1, new DateTime(2022, 1, 5, 15, 52, 13, 920, DateTimeKind.Local).AddTicks(352), "Project 1" });
+                values: new object[] { 1, 1, new DateTime(2022, 1, 8, 11, 11, 20, 868, DateTimeKind.Local).AddTicks(2011), "Project 1" });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 2, 2, new DateTime(2022, 1, 5, 15, 52, 13, 921, DateTimeKind.Local).AddTicks(1298), "Project 2" });
+                values: new object[] { 2, 2, new DateTime(2022, 1, 8, 11, 11, 20, 869, DateTimeKind.Local).AddTicks(2848), "Project 2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",

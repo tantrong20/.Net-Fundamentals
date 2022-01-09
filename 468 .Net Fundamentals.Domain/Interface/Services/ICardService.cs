@@ -16,6 +16,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
         public Task<CardVM> GetDetail(int id);
         public Task Delete(int id);
 
+        public Task CardMovement(int id, CardMovementVM data);
 
         public Task UpdateName(int id, string newName);
         public Task UpdatePriority(int id, TaskPriority newPriority);

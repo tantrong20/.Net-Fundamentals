@@ -20,7 +20,7 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(TagCreateVM request)
+        public async Task CreateOnProject(int projectId, string name)
         {
             try
             {
@@ -28,8 +28,8 @@ namespace _468_.Net_Fundamentals.Service
 
                 var tag = new Tag
                 {
-                    Name = request.Name,
-                    ProjectId = request.ProjectId
+                    Name = name,
+                    ProjectId = projectId
                 };
               
                 await _unitOfWork.Repository<Tag>().InsertAsync(tag);
@@ -40,7 +40,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.RollbackTransaction();
             }
         }
-        public async Task<IList<TagVM>> GetAll(int projectId)
+        public async Task<IList<TagVM>> GetAllOnProject(int projectId)
         {
             var tagsVM = await _unitOfWork.Repository<Tag>()
                 .Query()
@@ -96,5 +96,39 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
+        public async Task AddCardTag(int cardId, int tagId)
+        {
+            try
+            {
+                var cardTag = new CardTag
+                {
+                    CardId = cardId,
+                    TagId = tagId
+                };
+
+                await _unitOfWork.Repository<CardTag>().InsertAsync(cardTag);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
+            }
+        }
+
+        public async Task<IList<CardTagVM>> GetAllCardTag(int cardId)
+        {
+            var cardTagVm = await _unitOfWork.Repository<CardTag>()
+               .Query()
+               .Where(_ => _.CardId == cardId)
+               .Select(t => new CardTagVM
+               {
+                   CardId = t.CardId,
+                   TagId = t.TagId,
+                   TagName = t.Tag.Name
+               }).ToListAsync();
+
+            return cardTagVm;
+        }
     }
 }

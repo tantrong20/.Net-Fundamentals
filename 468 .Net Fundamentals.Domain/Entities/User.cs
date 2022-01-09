@@ -14,6 +14,8 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public string Email { get; set; }
 
+        public string ImagePath { get; set; }
+
         [Required]
         public int Role { get; set; }
     }

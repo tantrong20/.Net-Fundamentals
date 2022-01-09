@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220105085214_initial")]
+    [Migration("20220108041121_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,14 +134,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2022, 1, 5, 15, 52, 13, 920, DateTimeKind.Local).AddTicks(352),
+                            CreatedOn = new DateTime(2022, 1, 8, 11, 11, 20, 868, DateTimeKind.Local).AddTicks(2011),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2022, 1, 5, 15, 52, 13, 921, DateTimeKind.Local).AddTicks(1298),
+                            CreatedOn = new DateTime(2022, 1, 8, 11, 11, 20, 869, DateTimeKind.Local).AddTicks(2848),
                             Name = "Project 2"
                         });
                 });
@@ -215,6 +215,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")

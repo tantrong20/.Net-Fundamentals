@@ -20,17 +20,33 @@ namespace _468_.Net_Fundamentals.Controllers
             _tagService = tagService;
         }
 
-        [HttpPost]
-        public async Task Create([FromBody] TagCreateVM request)
+
+        [HttpPost("/api/project/{projectId}/tags")]
+        public async Task CreateOnProject(int projectId, [FromBody] string name)
         {
-            await _tagService.Create(request);
+            await _tagService.CreateOnProject(projectId, name);
         }
 
 
-        [HttpGet]
-        public async Task<IList<TagVM>> GetAll([FromBody] int projectId)
+        [HttpGet("/api/project/{projectId}/tags")]
+        public async Task<IList<TagVM>> GetAllOnProject(int projectId)
         {
-            return await _tagService.GetAll(projectId);
+            return await _tagService.GetAllOnProject(projectId);
+        }
+
+
+
+        [HttpPost("/api/card/{cardId}/tags")]
+        public async Task AddCardTag(int cardId, [FromBody] int tagId)
+        {
+            await _tagService.AddCardTag(cardId, tagId);
+        }
+
+
+        [HttpGet("/api/card/{cardId}/tags")]
+        public async Task<IList<CardTagVM>> GetAllCardTag(int cardId)
+        {
+            return await _tagService.GetAllCardTag(cardId);
         }
 
         [HttpPut("{id}")]

@@ -21,7 +21,7 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(TodoCreateVM request)
+        public async Task Create(int cardId, string name)
         {
             try
             {
@@ -29,8 +29,8 @@ namespace _468_.Net_Fundamentals.Service
 
                 var todo = new Todo
                 {
-                    Name = request.Name,
-                    CardId = request.CardId,
+                    Name = name,
+                    CardId = cardId,
                     IsCompleted = false
                 };
 
@@ -52,6 +52,8 @@ namespace _468_.Net_Fundamentals.Service
                 .Query()
                 .Where(_ => _.CardId == cardId)
                 .Select(todo => new TodoVM {
+                    Id = todo.Id,
+                    IsCompleted = todo.IsCompleted,
                     Name = todo.Name,
                     CardId = todo.CardId
                 }).ToListAsync();
@@ -68,26 +70,36 @@ namespace _468_.Net_Fundamentals.Service
             return todoVMs;
         }
 
-        public async Task Update(int id, TodoVM todoVM)
+        public async Task UpdateName(int id, string name)
         {
-
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 var todo =  await _unitOfWork.Repository<Todo>().FindAsync(id);
 
-                todo.Name = todoVM.Name;
-                todo.IsCompleted = todoVM.IsCompleted;
+                todo.Name = name;
 
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
             }
         }
+        public async Task UpdateComplete(int id, Boolean status)
+        {
+            try
+            {
+                var todo = await _unitOfWork.Repository<Todo>().FindAsync(id);
 
+                todo.IsCompleted = status;
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
+            }
+        }
         public async Task Delete(int id)
         {
             try

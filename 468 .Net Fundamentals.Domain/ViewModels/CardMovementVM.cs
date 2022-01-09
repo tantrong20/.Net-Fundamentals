@@ -4,10 +4,9 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class TagCreateVM
+    public class CardMovementVM
     {
-        public string Name { get; set; }
-
-        public int ProjectId { get; set; }
+        public int BusId { get; set; }
+        public float Index { get; set; }
     }
 }

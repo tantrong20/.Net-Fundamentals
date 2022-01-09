@@ -18,22 +18,28 @@ namespace _468_.Net_Fundamentals.Controllers
             _todoService = todoService;
         }
 
-        [HttpPost]
-        public async Task Create([FromBody] TodoCreateVM request)
+        [HttpPost("/api/card/{cardId}/todos")]
+        public async Task Create(int cardId, [FromBody]  string name)
         {
-            await _todoService.Create(request);
+            await _todoService.Create(cardId, name);
         }
 
-        [HttpGet]
+        [HttpGet("/api/card/{cardId}/todos")]
         public async Task<IList<TodoVM>> GetAll(int cardId)
         {
             return await _todoService.GetAll(cardId);
         }
          
-        [HttpPut("{id}")]
-        public async Task Update(int id, [FromBody] TodoVM todoVM)
+        [HttpPut("{id}/name")]
+        public async Task UpdateName(int id, [FromBody] string name)
         {
-            await _todoService.Update(id, todoVM);
+            await _todoService.UpdateName(id, name);
+        }
+
+        [HttpPut("{id}/iscompleted")]
+        public async Task UpdateComplete(int id, [FromBody] Boolean isCompleted)
+        {
+            await _todoService.UpdateComplete(id, isCompleted);
         }
 
         [HttpDelete("{id}")]

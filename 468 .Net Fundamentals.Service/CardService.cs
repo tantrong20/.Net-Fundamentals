@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using _468_.Net_Fundamentals.Domain.EnumType;
+using Microsoft.AspNetCore.Mvc;
 
 namespace _468_.Net_Fundamentals.Service
 {
@@ -97,7 +98,19 @@ namespace _468_.Net_Fundamentals.Service
             await _unitOfWork.SaveChangesAsync();    
         }
 
-        public async Task UpdateName(int id, string newName)
+        // Update API
+
+        public async Task CardMovement(int id, [FromBody] CardMovementVM data)
+        {
+            var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+
+            card.BusinessId = data.BusId;
+            card.Index = data.Index;
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpdateName(int id, [FromBody] string newName)
         {
             var card =  await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -106,7 +119,7 @@ namespace _468_.Net_Fundamentals.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdatePriority(int id, TaskPriority newPriority)
+        public async Task UpdatePriority(int id, [FromBody] TaskPriority newPriority)
         {
             var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -115,7 +128,7 @@ namespace _468_.Net_Fundamentals.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateBusiness(int id, int newBusinessId)
+        public async Task UpdateBusiness(int id, [FromBody] int newBusinessId)
         {
             var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -124,7 +137,7 @@ namespace _468_.Net_Fundamentals.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateDescription(int id, string newDescription)
+        public async Task UpdateDescription(int id, [FromBody] string newDescription)
         {
             var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -133,7 +146,7 @@ namespace _468_.Net_Fundamentals.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateDuedate(int id, DateTime newDuedate)
+        public async Task UpdateDuedate(int id, [FromBody] DateTime newDuedate)
         {
             var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -144,7 +157,7 @@ namespace _468_.Net_Fundamentals.Service
 
         // TAG
 
-        public async Task AddTagOnCard(int id, int tagId)
+        public async Task AddTagOnCard(int id, [FromBody] int tagId)
         {
             var card = await _unitOfWork.Repository<Card>().FindAsync(id);
             var tag = await _unitOfWork.Repository<Tag>().FindAsync(tagId);
@@ -196,5 +209,7 @@ namespace _468_.Net_Fundamentals.Service
 
             return cardTagVMs;
         }
+
+      
     }
 }
