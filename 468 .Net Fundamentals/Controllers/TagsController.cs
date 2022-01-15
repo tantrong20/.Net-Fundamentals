@@ -49,6 +49,14 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _tagService.GetAllCardTag(cardId);
         }
 
+
+
+        [HttpDelete("/api/card/{cardId}/tag/{tagId}")]
+        public async Task DeleteCardTag(int cardId, int tagId)
+        {
+            await _tagService.DeleteCardTag(cardId, tagId);
+        }
+
         [HttpPut("{id}")]
         public async Task Update(int id, string name)
         {

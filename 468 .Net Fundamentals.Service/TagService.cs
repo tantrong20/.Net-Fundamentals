@@ -1,4 +1,5 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
@@ -100,6 +101,8 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
+                await _unitOfWork.BeginTransaction();
+
                 var cardTag = new CardTag
                 {
                     CardId = cardId,
@@ -107,12 +110,29 @@ namespace _468_.Net_Fundamentals.Service
                 };
 
                 await _unitOfWork.Repository<CardTag>().InsertAsync(cardTag);
-
                 await _unitOfWork.SaveChangesAsync();
+
+
+                // Hardcode for login user
+                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+
+                var activity = new Activity
+                {
+                    CardId = cardId,
+                    UserId = user.Id,
+                    Action = AcctionEnumType.AddLabel,
+                    CurrentValue = cardTag.TagId.ToString(),
+                   OnDate = DateTime.Now
+                };
+
+                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+
+                await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
 
@@ -129,6 +149,39 @@ namespace _468_.Net_Fundamentals.Service
                }).ToListAsync();
 
             return cardTagVm;
+        }
+
+        public  async Task DeleteCardTag(int cardId, int tagId)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+
+                var cardTag = await _unitOfWork.Repository<CardTag>().Query()
+                    .Where(_ => _.CardId == cardId && _.TagId == tagId)
+                    .FirstOrDefaultAsync();
+                await _unitOfWork.Repository<CardTag>().DeleteAsync(cardTag);
+
+                // Hardcode for login user
+                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+
+                var activity = new Activity
+                {
+                    CardId = cardId,
+                    UserId = user.Id,
+                    Action = AcctionEnumType.RemoveLabel,
+                    CurrentValue = cardTag.TagId.ToString(),
+                    OnDate = DateTime.Now
+                };
+                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+
+                await _unitOfWork.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
+                throw e;
+            }
         }
     }
 }

@@ -163,7 +163,6 @@ namespace _468_.Net_Fundamentals.Service
         }
 
         // Update API
-
         public async Task CardMovement(int id, [FromBody] CardMovementVM data)
         {
             try
@@ -173,6 +172,9 @@ namespace _468_.Net_Fundamentals.Service
                 // Hard code for user
                 var user = await _unitOfWork.Repository<User>().FindAsync(1);
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+                // To get business name
+                var business = await _unitOfWork.Repository<Business>().FindAsync(data.BusId);
+
 
                 // Save history
                 var activity = new Activity
@@ -185,13 +187,13 @@ namespace _468_.Net_Fundamentals.Service
                 if (card.BusinessId == data.BusId)
                 {
                     activity.Action = AcctionEnumType.ReOrder;
+                    activity.CurrentValue = business.Name;
                 }
                 else
                 {
                     activity.Action = AcctionEnumType.UpdateBusiness;
 
                     activity.PreviousValue = card.Business.Name;
-                    var business = await _unitOfWork.Repository<Business>().FindAsync(data.BusId);
                     activity.CurrentValue = business.Name;
                 }
 
@@ -345,10 +347,12 @@ namespace _468_.Net_Fundamentals.Service
                     OnDate = DateTime.Now
                 };
 
+
                 // Update duedate
                 card.Duedate = DateTime.Parse(newDuedate);
 
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+                await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
             {

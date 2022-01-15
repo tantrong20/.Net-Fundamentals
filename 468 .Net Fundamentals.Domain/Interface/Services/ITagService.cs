@@ -12,6 +12,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 
         public Task AddCardTag(int cardId, int tagId);
         public Task<IList<CardTagVM>> GetAllCardTag(int cardId);
+        public Task DeleteCardTag(int cardId, int tagId);
 
         public Task Update(int id, string name);
         public Task Delete(int id);

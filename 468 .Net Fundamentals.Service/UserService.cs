@@ -1,4 +1,5 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
@@ -24,15 +25,31 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
+                await _unitOfWork.BeginTransaction();
+                // Hardcode for login user
+                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+
+                // Saving user assign
                 var cardAssign = new CardAssign
                 {
                     CardId = cardId,
                     AssignTo = userId
                 };
 
-                await _unitOfWork.Repository<CardAssign>().InsertAsync(cardAssign);
+                // Save history
+                var activity = new Activity
+                {
+                    CardId = cardId,
+                    UserId = user.Id,
+                    Action = AcctionEnumType.AssignUser,
+                    CurrentValue = userId.ToString(),
+                    OnDate = DateTime.Now
+                };
 
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.Repository<CardAssign>().InsertAsync(cardAssign);
+                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+
+                await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
             {
@@ -92,12 +109,32 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
+                await _unitOfWork.BeginTransaction();
+
                 var cardAssign = await _unitOfWork.Repository<CardAssign>()
                     .Query()
                     .Where(_ => _.CardId == cardId && _.AssignTo == userId)
                     .FirstOrDefaultAsync();
 
                 await _unitOfWork.Repository<CardAssign>().DeleteAsync(cardAssign);
+
+                // Hardcode for login user
+                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+
+                // Save history
+                var activity = new Activity
+                {
+                    CardId = cardId,
+                    UserId = user.Id,
+                    Action = AcctionEnumType.RemoveAssignUser,
+                    CurrentValue = cardAssign.AssignTo.ToString(),
+                    OnDate = DateTime.Now
+                };
+
+                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+
+
+                await _unitOfWork.CommitTransaction();
 
             }
             catch (Exception e)

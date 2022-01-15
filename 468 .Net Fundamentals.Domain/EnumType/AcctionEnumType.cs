@@ -13,6 +13,10 @@ namespace _468_.Net_Fundamentals.Domain.EnumType
         UpdatePriority = 5,
         UpdateDescription = 6,
         UpdateDuedate = 7,
-        Delete = 8
+        Delete = 8,
+        AssignUser= 9,
+        RemoveAssignUser = 10,
+        AddLabel = 11,
+        RemoveLabel = 12,
     }
 }
