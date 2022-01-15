@@ -20,7 +20,7 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<int> Create(string name)
+        public async Task Create(string name)
         {
             try
             {
@@ -36,43 +36,59 @@ namespace _468_.Net_Fundamentals.Service
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
                 await _unitOfWork.SaveChangesAsync();
-
-                return 1;
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
-                return 0;
+                throw e;
             }
         }
 
         public async Task<ProjectVM> Get(int id)
         {
-            var project = await _unitOfWork.Repository<Project>().FindAsync(id);
-       
-            var projectVM = new ProjectVM
+            try
             {
-                Id = project.Id,
-                Name = project.Name,
-                CreatedBy = project.CreatedBy,
-            };
+                var project = await _unitOfWork.Repository<Project>().FindAsync(id);
 
-            return projectVM;
+                var projectVM = new ProjectVM
+                {
+                    Id = project.Id,
+                    Name = project.Name,
+                    CreatedBy = project.CreatedBy,
+                };
+
+                return projectVM;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
         }
 
         public async Task<IList<ProjectVM>> GetAll()
         {
-            var projectVMs = await _unitOfWork.Repository<Project>()
-                        .Query()
-                        .Where(_ => _.CreatedBy == 1)
-                        .Select(project => new ProjectVM
-                        {
-                            Id = project.Id,
-                            Name = project.Name,
-                            CreatedBy = project.CreatedBy
-                        })
-                        .ToListAsync();
-            return projectVMs;
+            try
+            {
+                var projectVMs = await _unitOfWork.Repository<Project>()
+                    .Query()
+                    .Where(_ => _.CreatedBy == 1)
+                    .Select(project => new ProjectVM
+                    {
+                        Id = project.Id,
+                        Name = project.Name,
+                        CreatedBy = project.CreatedBy
+                    })
+                    .ToListAsync();
+                return projectVMs;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
         }
 
         public async Task Update(int id, string name)
@@ -89,6 +105,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
         public async Task Delete(int id)
@@ -96,13 +113,14 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.Repository<Project>().DeleteAsync(id);
-              
+
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
-        }          
+        }
     }
 }

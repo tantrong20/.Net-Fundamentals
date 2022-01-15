@@ -57,11 +57,6 @@ namespace _468_.Net_Fundamentals.Controllers
             await _cardService.UpdatePriority(id, newPriority);
         }
 
-        [HttpPut("{id}/business")]
-        public async Task UpdateBusiness(int id, [FromBody] int newBusinessId)
-        {
-            await _cardService.UpdateBusiness(id, newBusinessId);
-        }
 
         [HttpPut("{id}/description")]
         public async Task UpdateDescription(int id, [FromBody] string newDescription)

@@ -9,7 +9,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface IProjectService
     {
-        public Task<int> Create(string name);
+        public Task Create(string name);
         public Task<IList<ProjectVM>> GetAll();
         public Task<ProjectVM> Get(int id);
         public Task Update(int id, string name);

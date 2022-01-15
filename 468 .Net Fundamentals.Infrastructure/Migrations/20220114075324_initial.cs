@@ -8,6 +8,24 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CardId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
+                    Action = table.Column<int>(nullable: false),
+                    CurrentValue = table.Column<string>(nullable: true),
+                    PreviousValue = table.Column<string>(nullable: true),
+                    OnDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -151,7 +169,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         name: "FK_CardAssign_Card_CardId",
                         column: x => x.CardId,
                         principalTable: "Card",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,7 +192,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         name: "FK_CardTag_Tag_TagId",
                         column: x => x.TagId,
                         principalTable: "Tag",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,12 +230,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 1, 1, new DateTime(2022, 1, 9, 20, 37, 12, 25, DateTimeKind.Local).AddTicks(2011), "Project 1" });
+                values: new object[] { 1, 1, new DateTime(2022, 1, 14, 14, 53, 23, 364, DateTimeKind.Local).AddTicks(7864), "Project 1" });
 
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "CreatedBy", "CreatedOn", "Name" },
-                values: new object[] { 2, 2, new DateTime(2022, 1, 9, 20, 37, 12, 26, DateTimeKind.Local).AddTicks(2963), "Project 2" });
+                values: new object[] { 2, 2, new DateTime(2022, 1, 14, 14, 53, 23, 365, DateTimeKind.Local).AddTicks(8974), "Project 2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",
@@ -260,6 +280,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Activities");
+
             migrationBuilder.DropTable(
                 name: "CardAssign");
 

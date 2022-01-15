@@ -45,7 +45,9 @@ namespace _468_.Net_Fundamentals.Extensions
                 .AddScoped<ITodoService, TodoService>()
                 .AddScoped<ITagService, TagService>()
                 .AddScoped<IBusinessService, BusinessService>()
-                .AddScoped<IUserService, UserService>();
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IActivityService, ActivityService>();
+
 
 
         }

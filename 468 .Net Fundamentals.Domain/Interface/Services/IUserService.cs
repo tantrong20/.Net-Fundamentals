@@ -16,6 +16,8 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 
         public Task<IList<CardAssignVM>> GetAllCardAssign(int cardId);
 
+        public Task DeleteCardAssign(int cardId, int userId);
+
 
         /*public Task Update(int id, string name);
         public Task Delete(int id);*/

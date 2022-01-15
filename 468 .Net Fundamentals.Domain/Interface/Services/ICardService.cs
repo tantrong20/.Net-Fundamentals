@@ -20,7 +20,6 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 
         public Task UpdateName(int id, string newName);
         public Task UpdatePriority(int id, TaskPriority newPriority);
-        public Task UpdateBusiness(int id, int newBusinessId);
         public Task UpdateDescription(int id, string newDescription);
         public Task UpdateDuedate(int id, string newDuedate);
 

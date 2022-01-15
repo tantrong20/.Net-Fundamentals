@@ -88,6 +88,25 @@ namespace _468_.Net_Fundamentals.Service
             return userVMs;
         }
 
-     
+        public async Task DeleteCardAssign(int cardId, int userId)
+        {
+            try
+            {
+                var cardAssign = await _unitOfWork.Repository<CardAssign>()
+                    .Query()
+                    .Where(_ => _.CardId == cardId && _.AssignTo == userId)
+                    .FirstOrDefaultAsync();
+
+                await _unitOfWork.Repository<CardAssign>().DeleteAsync(cardAssign);
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+                  
+        }
+
     }
 }

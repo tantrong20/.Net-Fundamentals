@@ -52,13 +52,13 @@ namespace _468_.Net_Fundamentals.Infrastructure
             builder.Entity<CardAssign>()
                 .HasOne(ca => ca.Card)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasForeignKey(ca => ca.CardId);
+                .HasForeignKey(ca => ca.CardId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder.Entity<CardAssign>()
                 .HasOne(ca => ca.User)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasForeignKey(ca => ca.AssignTo);
+                .HasForeignKey(ca => ca.AssignTo)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // CardTag
             builder.Entity<CardTag>().HasKey(ct => new { ct.CardId, ct.TagId });
@@ -70,10 +70,12 @@ namespace _468_.Net_Fundamentals.Infrastructure
             builder.Entity<CardTag>()
                 .HasOne(ct => ct.Tag)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(ct => ct.TagId);
 
         }
+
+        public DbSet<Activity> Activities { get; set; }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }

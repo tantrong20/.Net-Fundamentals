@@ -18,9 +18,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task<int> Create([FromBody] string name)
+        public async Task Create([FromBody] string name)
         {
-            return await _projectService.Create(name);
+            await _projectService.Create(name);
         }
 
         [HttpGet]

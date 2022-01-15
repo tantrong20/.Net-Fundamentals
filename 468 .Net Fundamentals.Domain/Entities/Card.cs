@@ -32,7 +32,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [ForeignKey("BusinessId")]
         public virtual Business Business { get; set; }
 
-        public virtual IList<Todo> Todos { get; set; }
+        /*public virtual IList<Todo> Todos { get; set; }*/
    
     }
 }

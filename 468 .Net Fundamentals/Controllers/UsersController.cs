@@ -46,5 +46,12 @@ namespace _468_.Net_Fundamentals.Controllers
         {
            return  await _userService.GetAllCardAssign(cardId);
         }
+
+        [Route("/api/card/{cardId}/user/{userId}")]
+        [HttpDelete]
+        public async Task DeleteCardAssign(int cardId, int userId)
+        {
+            await _userService.DeleteCardAssign(cardId, userId);
+        }
     }
 }

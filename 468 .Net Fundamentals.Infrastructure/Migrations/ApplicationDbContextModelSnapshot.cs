@@ -19,6 +19,36 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Activity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OnDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PreviousValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Activities");
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
                 {
                     b.Property<int>("Id")
@@ -132,14 +162,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedBy = 1,
-                            CreatedOn = new DateTime(2022, 1, 9, 20, 37, 12, 25, DateTimeKind.Local).AddTicks(2011),
+                            CreatedOn = new DateTime(2022, 1, 14, 14, 53, 23, 364, DateTimeKind.Local).AddTicks(7864),
                             Name = "Project 1"
                         },
                         new
                         {
                             Id = 2,
                             CreatedBy = 2,
-                            CreatedOn = new DateTime(2022, 1, 9, 20, 37, 12, 26, DateTimeKind.Local).AddTicks(2963),
+                            CreatedOn = new DateTime(2022, 1, 14, 14, 53, 23, 365, DateTimeKind.Local).AddTicks(8974),
                             Name = "Project 2"
                         });
                 });
@@ -251,7 +281,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
-                        .WithMany("Businesses")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -277,7 +307,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
                         .WithMany()
                         .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -292,7 +322,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Tag", "Tag")
                         .WithMany()
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -332,7 +362,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Todo", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
-                        .WithMany("Todos")
+                        .WithMany()
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

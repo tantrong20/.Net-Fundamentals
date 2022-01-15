@@ -22,7 +22,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [ForeignKey("CreatedBy")]
         public virtual User User { get; set; }
 
-        public virtual IList<Business> Businesses { get; set; }
+        /*public virtual IList<Business> Businesses { get; set; }*/
 
     }
 }
