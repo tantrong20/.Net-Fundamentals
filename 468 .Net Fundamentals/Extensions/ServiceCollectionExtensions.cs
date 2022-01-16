@@ -1,7 +1,6 @@
 ﻿using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Infrastructure;
-using _468_.Net_Fundamentals.Infrastructure.Repositories;
 using _468_.Net_Fundamentals.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -47,9 +46,8 @@ namespace _468_.Net_Fundamentals.Extensions
                 .AddScoped<IBusinessService, BusinessService>()
                 .AddScoped<IUserService, UserService>()
                 .AddScoped<IActivityService, ActivityService>();
-
-
-
         }
+
+
     }
 }

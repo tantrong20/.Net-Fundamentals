@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using _468_.Net_Fundamentals.Extensions;
+using _468_.Net_Fundamentals.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using _468_.Net_Fundamentals.Infrastructure;
 
 namespace _468_.Net_Fundamentals
 {
@@ -39,7 +42,12 @@ namespace _468_.Net_Fundamentals
                 .AddDatabase(Configuration)
                 .AddRepositories()
                 .AddServices();
-            
+
+            // ??ng ký các d?ch v? c?a Identity
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             /*services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));*/
 
             // Swagger
@@ -59,7 +67,6 @@ namespace _468_.Net_Fundamentals
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // Swagger
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
@@ -71,7 +78,8 @@ namespace _468_.Net_Fundamentals
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();   // Ph?c h?i thông tin ??ng nh?p (xác th?c)
+            app.UseAuthorization();   // Ph?c h?i thông tinn v? quy?n c?a User
 
             app.UseEndpoints(endpoints =>
             {
