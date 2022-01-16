@@ -1,6 +1,7 @@
 ﻿using _468_.Net_Fundamentals.Domain;
 using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.EnumType;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Infrastructure
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -16,6 +17,18 @@ namespace _468_.Net_Fundamentals.Infrastructure
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            // Bỏ tiền tố AspNet của các bảng: mặc định
+            foreach (var entityType in builder.Model.GetEntityTypes())
+            {
+                var tableName = entityType.GetTableName();
+                if (tableName.StartsWith("AspNet"))
+                {
+                    entityType.SetTableName(tableName.Substring(6));
+                }
+            }
+
             var users = new User[]
             {
                 new User {Id =1, Name = "Tan Trong", Email = "tronglt2001@gmail.com", Role = (int)Role.Employee, ImagePath="https://lh6.googleusercontent.com/X7JYEBXkxFMLWlXgsipqGbOYN6j9Lh_83FdKL-WPAtVKZsNnwrEE-VJVR83IXO73jgq4NrVuwPER2JVgkuyIpFMDMLzN3kbY1uHnD2_5enIx52yB-0IWf_VIfgFcpQBb4Yp3-an0"},
@@ -31,21 +44,6 @@ namespace _468_.Net_Fundamentals.Infrastructure
             builder.Entity<Project>().HasData(projects);
             builder.Entity<User>().HasData(users);
 
-
-
-
-            //ProjectMember
-            builder.Entity<ProjectMember>().HasKey(pm => new { pm.MemberId, pm.ProjectId });
-            builder.Entity<ProjectMember>()
-                .HasOne(pm => pm.User)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasForeignKey(pm => pm.MemberId);
-            builder.Entity<ProjectMember>()
-                .HasOne(pm => pm.Project)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasForeignKey(pm => pm.ProjectId);
 
             // CardAssign
             builder.Entity<CardAssign>().HasKey(ca => new { ca.CardId, ca.AssignTo});
@@ -86,7 +84,6 @@ namespace _468_.Net_Fundamentals.Infrastructure
 
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Todo> Todos { get; set; }
-        public DbSet<ProjectMember> ProjectMembers { get; set; }
 
 
     }
