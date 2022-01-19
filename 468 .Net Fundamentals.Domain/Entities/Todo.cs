@@ -9,7 +9,6 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     [Table("Todo")]
     public class Todo : EntityBase<int>
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public Boolean IsCompleted { get; set; }
 

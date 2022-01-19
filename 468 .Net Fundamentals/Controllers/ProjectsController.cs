@@ -1,14 +1,17 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers
 {
-    [Route("api/project")]
+    [Route("api/projects")]
     [ApiController]
+    [Authorize]
+    /*[Authorize(Roles = AppUserRole.Admin)]*/
     public class ProjectsController : ControllerBase
     {
         private IProjectService _projectService;

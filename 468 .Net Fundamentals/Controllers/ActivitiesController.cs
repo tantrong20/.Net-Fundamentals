@@ -10,7 +10,7 @@ namespace _468_.Net_Fundamentals.Controllers
 {
     [Route("api/activities")]
     [ApiController]
-    public class ActivitiesController : Controller
+    public class ActivitiesController : ControllerBase
     {
         private IActivityService _activityService;
         public ActivitiesController(IActivityService activityService)

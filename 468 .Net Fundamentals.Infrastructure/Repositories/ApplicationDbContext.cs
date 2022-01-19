@@ -35,13 +35,7 @@ namespace _468_.Net_Fundamentals.Infrastructure
                 new User {Id =2, Name = "Hien Nhu", Email = "hiennhu@gmail.com", Role = (int)Role.Employee, ImagePath="https://i.pinimg.com/474x/15/06/df/1506df6aa1b4c6a8162683d7e8114e65.jpg"}
             };
 
-            var projects = new Project[]
-            {
-                new Project {Id =1, Name = "Project 1", CreatedOn = DateTime.Now, CreatedBy =1 },
-                new Project {Id =2, Name = "Project 2", CreatedOn = DateTime.Now, CreatedBy =2 },   
-            };
-
-            builder.Entity<Project>().HasData(projects);
+         
             builder.Entity<User>().HasData(users);
 
 

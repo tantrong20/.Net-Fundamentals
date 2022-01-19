@@ -8,6 +8,9 @@ using _468_.Net_Fundamentals.Extensions;
 using _468_.Net_Fundamentals.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using _468_.Net_Fundamentals.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace _468_.Net_Fundamentals
 {
@@ -43,26 +46,52 @@ namespace _468_.Net_Fundamentals
                 .AddRepositories()
                 .AddServices();
 
-            // ??ng ký các d?ch v? c?a Identity
-            services.AddIdentity<AppUser, IdentityRole>()
+            // For Identity
+            services.AddIdentity<AppUser, IdentityRole>(config =>
+                {
+                    config.Password.RequireNonAlphanumeric = false; //optional
+                    config.SignIn.RequireConfirmedEmail = false; //optional
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            /*services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));*/
+            // Adding Authentication
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+             .AddJwtBearer(options =>
+             {
+                 options.SaveToken = true;
+                 options.RequireHttpsMetadata = false;
+                 options.TokenValidationParameters = new TokenValidationParameters()
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidAudience = Configuration["JWT:ValidAudience"],
+                     ValidIssuer = Configuration["JWT:ValidIssuer"],
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                 };
+             });
 
             // Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "468 .Net Fundamentals", Version = "1.0" });
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors( "AllowAccess_To_API"
-               /*  options => options.WithOrigins("http://localhost:4200").AllowAnyMethod()*/
-             );
+          /*  app.UseCors( x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+             );*/
 
             if (env.IsDevelopment())
             {
@@ -78,8 +107,8 @@ namespace _468_.Net_Fundamentals
 
             app.UseRouting();
 
-            app.UseAuthentication();   // Ph?c h?i thông tin ??ng nh?p (xác th?c)
-            app.UseAuthorization();   // Ph?c h?i thông tinn v? quy?n c?a User
+            app.UseAuthentication();   
+            app.UseAuthorization();   
 
             app.UseEndpoints(endpoints =>
             {

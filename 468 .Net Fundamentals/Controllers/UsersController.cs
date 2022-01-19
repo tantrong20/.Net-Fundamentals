@@ -10,7 +10,7 @@ namespace _468_.Net_Fundamentals.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
        
