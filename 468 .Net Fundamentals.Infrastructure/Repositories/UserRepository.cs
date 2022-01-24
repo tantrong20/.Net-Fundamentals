@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Infrastructure.Repositories
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IUserRepository : IRepository<AppUser>
     {
 
     }
-    public class UserRepository : RepositoryBase<User>, IUserRepository
+    public class UserRepository : RepositoryBase<AppUser>, IUserRepository
     {
         public UserRepository(ApplicationDbContext context) : base(context)
         {

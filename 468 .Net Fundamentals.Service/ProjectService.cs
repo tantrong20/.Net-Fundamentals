@@ -1,12 +1,15 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.Interface;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,23 +18,26 @@ namespace _468_.Net_Fundamentals.Service
     public class ProjectService : RepositoryBase<Project>, IProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProjectService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly ICurrrentUser _currrentUser;
+
+        public ProjectService(ApplicationDbContext context, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser currrentUser) : base(context)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _currrentUser = currrentUser;
         }
 
         public async Task Create(string name)
         {
             try
             {
-                /*await _unitOfWork.BeginTransaction();*/
-
-                var userLogin = await _unitOfWork.Repository<User>().FindAsync(1);
+                var currentUserId = _currrentUser?.Id;
 
                 var project = new Project
                 {
                     Name = name,
-                    CreatedBy = userLogin.Id,
+                    CreatedBy = currentUserId,
                 };
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
@@ -71,14 +77,27 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
+                /*// Gets list of claims.
+                IEnumerable<Claim> claim = identity.Claims;
+
+                // Gets name from claims. Generally it's an email address.
+                var usernameClaim = claim
+                    .Where(x => x.Type == ClaimTypes.Name)
+                    .FirstOrDefault();
+
+                // Finds user.
+                var user = await _userManager
+                    .FindByNameAsync(usernameClaim.Value);*/
+                var currentUserId = _currrentUser?.Id;
+
                 var projectVMs = await _unitOfWork.Repository<Project>()
                     .Query()
-                    .Where(_ => _.CreatedBy == 1)
+                    .Where(_ => _.CreatedBy == currentUserId)
                     .Select(project => new ProjectVM
                     {
                         Id = project.Id,
                         Name = project.Name,
-                        CreatedBy = project.CreatedBy
+                        CreatedBy = project.CreatedBy,
                     })
                     .ToListAsync();
                 return projectVMs;

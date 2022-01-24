@@ -19,11 +19,6 @@ namespace _468_.Net_Fundamentals.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegistrationVM userRegistration)
-        {
-           return await _accountService.Register(userRegistration);
-        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginVM userLoginVM)
@@ -31,10 +26,28 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _accountService.Login(userLoginVM);
         }
 
-        [HttpPost("registeradmin")]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshRequest)
+        {
+            return await _accountService.RefreshToken(refreshRequest);
+        }
+
+        /*  [HttpPost("revoketoken")]
+          public async Task<IActionResult> RevokeToken()
+          {
+              return await _accountService.RevokeToken();
+          }*/
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserRegistrationVM userRegistration)
+        {
+           return await _accountService.Register(userRegistration);
+        }
+
+      /*  [HttpPost("registeradmin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] UserRegistrationVM userRegistration)
         {
             return await _accountService.RegisterAdmin(userRegistration);
-        }
+        }*/
     }
 }

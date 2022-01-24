@@ -12,11 +12,11 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public int CardId { get; set; }
 
-        public int AssignTo { get; set; }
+        public string AssignTo { get; set; }
 
         public virtual Card Card { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual AppUser User { get; set; }
 
     }
 }

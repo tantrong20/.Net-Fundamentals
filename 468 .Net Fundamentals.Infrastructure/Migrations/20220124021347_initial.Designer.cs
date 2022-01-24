@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220118091851_initial")]
+    [Migration("20220124021347_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -174,8 +174,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<string>("PreviousValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -313,8 +313,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<int>("CardId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AssignTo")
-                        .HasColumnType("int");
+                    b.Property<string>("AssignTo")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CardId", "AssignTo");
 
@@ -345,8 +345,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -405,47 +406,21 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.ToTable("Todo");
                 });
 
-            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.User", b =>
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.ViewModels.Authenticate.RefreshToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "tronglt2001@gmail.com",
-                            ImagePath = "https://lh6.googleusercontent.com/X7JYEBXkxFMLWlXgsipqGbOYN6j9Lh_83FdKL-WPAtVKZsNnwrEE-VJVR83IXO73jgq4NrVuwPER2JVgkuyIpFMDMLzN3kbY1uHnD2_5enIx52yB-0IWf_VIfgFcpQBb4Yp3-an0",
-                            Name = "Tan Trong",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "hiennhu@gmail.com",
-                            ImagePath = "https://i.pinimg.com/474x/15/06/df/1506df6aa1b4c6a8162683d7e8114e65.jpg",
-                            Name = "Hien Nhu",
-                            Role = 1
-                        });
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -519,7 +494,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardAssign", b =>
                 {
-                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.User", "User")
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("AssignTo")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -549,7 +524,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
                 {
-                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.User", "User")
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -8,7 +8,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     public class Activity : EntityBase<int>
     {
         public int CardId { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public AcctionEnumType Action { get; set; }
         public string? CurrentValue { get; set; }                                          
         public string? PreviousValue { get; set; }

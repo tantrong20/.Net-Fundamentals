@@ -4,6 +4,7 @@ using _468_.Net_Fundamentals.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers

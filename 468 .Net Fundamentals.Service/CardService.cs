@@ -13,15 +13,19 @@ using _468_.Net_Fundamentals.Domain.EnumType;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using Newtonsoft.Json;
+using _468_.Net_Fundamentals.Domain.Interface;
 
 namespace _468_.Net_Fundamentals.Service
 {
     public class CardService : RepositoryBase<Card>, ICardService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CardService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        private readonly ICurrrentUser _currrentUser;
+
+        public CardService(ApplicationDbContext context, IUnitOfWork unitOfWork, ICurrrentUser currrentUser) : base(context)
         {
             _unitOfWork = unitOfWork;
+            _currrentUser = currrentUser;
         }
 
 
@@ -32,7 +36,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.BeginTransaction();
 
                 // Hard code for user
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
 
                 var card = await _unitOfWork.Repository<Business>()
                     .Query()
@@ -50,10 +54,13 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.Repository<Card>().InsertAsync(card);
                 await _unitOfWork.SaveChangesAsync();
 
+                // User action 
+                var currentUserId = _currrentUser?.Id;
+
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     Action = AcctionEnumType.Create,
                     OnDate = DateTime.Now
                 };
@@ -133,8 +140,9 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                // Hard code for user
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                // User action 
+                var currentUserId = _currrentUser?.Id;
+
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
                 if (card == null) return;
@@ -143,7 +151,7 @@ namespace _468_.Net_Fundamentals.Service
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     Action = AcctionEnumType.Delete,
                     OnDate = DateTime.Now
                 };
@@ -169,8 +177,9 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                // Hard code for user
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                // User action 
+                var currentUserId = _currrentUser?.Id;
+
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
                 // To get business name
                 var business = await _unitOfWork.Repository<Business>().FindAsync(data.BusId);
@@ -180,7 +189,7 @@ namespace _468_.Net_Fundamentals.Service
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     OnDate = DateTime.Now
                 };
 
@@ -221,8 +230,9 @@ namespace _468_.Net_Fundamentals.Service
 
                 await _unitOfWork.BeginTransaction();
 
-                // Hardcode for user
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                // User action 
+                var currentUserId = _currrentUser?.Id;
+
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
                 if (card.Name == newName) return;
@@ -231,7 +241,7 @@ namespace _468_.Net_Fundamentals.Service
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     Action = AcctionEnumType.UpdateName,
                     PreviousValue = card.Name,
                     CurrentValue = newName,
@@ -258,7 +268,9 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.BeginTransaction();
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                // User action 
+                var currentUserId = _currrentUser?.Id;
+
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
                 if (card.Priority == newPriority) return;
@@ -267,7 +279,7 @@ namespace _468_.Net_Fundamentals.Service
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     Action = AcctionEnumType.UpdatePriority,
                     PreviousValue = card.Priority.ToString(),
                     CurrentValue = newPriority.ToString(),
@@ -297,7 +309,9 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.BeginTransaction();
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                // User action 
+                var currentUserId = _currrentUser?.Id;
+
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
                 if (card.Description == newDescription) return;
@@ -306,7 +320,7 @@ namespace _468_.Net_Fundamentals.Service
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     Action = AcctionEnumType.UpdateDescription,
                     PreviousValue = card.Description,
                     CurrentValue = newDescription,
@@ -332,7 +346,8 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.BeginTransaction();
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                // User action 
+                var currentUserId = _currrentUser?.Id;
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
 
@@ -340,7 +355,7 @@ namespace _468_.Net_Fundamentals.Service
                 var activity = new Activity
                 {
                     CardId = card.Id,
-                    UserId = user.Id,
+                    UserId = currentUserId,
                     Action = AcctionEnumType.UpdateDuedate,
                     PreviousValue = card.Duedate.ToString(),
                     CurrentValue = DateTime.Parse(newDuedate).ToString(),

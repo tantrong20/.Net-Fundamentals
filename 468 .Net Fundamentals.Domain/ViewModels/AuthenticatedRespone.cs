@@ -4,9 +4,10 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class ProjectCreateVM
+    public class AuthenticatedRespone
     {
-        
-        public string Name { get; set; }
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
+
     }
 }

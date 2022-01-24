@@ -14,7 +14,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CardId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
                     Action = table.Column<int>(nullable: false),
                     CurrentValue = table.Column<string>(nullable: true),
                     PreviousValue = table.Column<string>(nullable: true),
@@ -23,6 +23,19 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Activities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Token = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,22 +50,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(maxLength: 50, nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    ImagePath = table.Column<string>(nullable: true),
-                    Role = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,15 +108,15 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false)
+                    CreatedBy = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Project", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Project_User_CreatedBy",
+                        name: "FK_Project_Users_CreatedBy",
                         column: x => x.CreatedBy,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -279,15 +276,15 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 columns: table => new
                 {
                     CardId = table.Column<int>(nullable: false),
-                    AssignTo = table.Column<int>(nullable: false)
+                    AssignTo = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CardAssign", x => new { x.CardId, x.AssignTo });
                     table.ForeignKey(
-                        name: "FK_CardAssign_User_AssignTo",
+                        name: "FK_CardAssign_Users_AssignTo",
                         column: x => x.AssignTo,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CardAssign_Card_CardId",
@@ -340,16 +337,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "Id", "Email", "ImagePath", "Name", "Role" },
-                values: new object[] { 1, "tronglt2001@gmail.com", "https://lh6.googleusercontent.com/X7JYEBXkxFMLWlXgsipqGbOYN6j9Lh_83FdKL-WPAtVKZsNnwrEE-VJVR83IXO73jgq4NrVuwPER2JVgkuyIpFMDMLzN3kbY1uHnD2_5enIx52yB-0IWf_VIfgFcpQBb4Yp3-an0", "Tan Trong", 1 });
-
-            migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "Id", "Email", "ImagePath", "Name", "Role" },
-                values: new object[] { 2, "hiennhu@gmail.com", "https://i.pinimg.com/474x/15/06/df/1506df6aa1b4c6a8162683d7e8114e65.jpg", "Hien Nhu", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Business_ProjectId",
@@ -438,6 +425,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "CardTag");
 
             migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
@@ -465,16 +455,13 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "Business");
 
             migrationBuilder.DropTable(
                 name: "Project");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }

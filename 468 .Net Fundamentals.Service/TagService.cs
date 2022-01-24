@@ -114,12 +114,12 @@ namespace _468_.Net_Fundamentals.Service
 
 
                 // Hardcode for login user
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
 
                 var activity = new Activity
                 {
                     CardId = cardId,
-                    UserId = user.Id,
+                    /*UserId = user.Id,*/
                     Action = AcctionEnumType.AddLabel,
                     CurrentValue = cardTag.TagId.ToString(),
                    OnDate = DateTime.Now
@@ -163,12 +163,12 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.Repository<CardTag>().DeleteAsync(cardTag);
 
                 // Hardcode for login user
-                var user = await _unitOfWork.Repository<User>().FindAsync(1);
+                /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
 
                 var activity = new Activity
                 {
                     CardId = cardId,
-                    UserId = user.Id,
+                    /*UserId = user.Id,*/
                     Action = AcctionEnumType.RemoveLabel,
                     CurrentValue = cardTag.TagId.ToString(),
                     OnDate = DateTime.Now

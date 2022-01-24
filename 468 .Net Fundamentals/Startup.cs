@@ -11,6 +11,9 @@ using _468_.Net_Fundamentals.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using _468_.Net_Fundamentals.Service.TokenGenerators;
+using _468_.Net_Fundamentals.Service.TokenValidators;
+using _468_.Net_Fundamentals.Service.Authenticator;
 
 namespace _468_.Net_Fundamentals
 {
@@ -26,13 +29,7 @@ namespace _468_.Net_Fundamentals
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // allow acces to API
-            services.AddCors(options => options.AddPolicy("AllowAccess_To_API",
-                policy => policy
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                ));
+            
 
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
@@ -44,7 +41,13 @@ namespace _468_.Net_Fundamentals
             services
                 .AddDatabase(Configuration)
                 .AddRepositories()
-                .AddServices();
+                .AddServices()
+                .AddCurrentUser();
+
+            services.AddSingleton<AccessTokenGenerator>();
+            services.AddSingleton<RefreshTokenGenerator>();
+            services.AddSingleton<RefreshTokenValidator>();
+            services.AddScoped<AuthenticatorProvider>();
 
             // For Identity
             services.AddIdentity<AppUser, IdentityRole>(config =>
@@ -87,11 +90,12 @@ namespace _468_.Net_Fundamentals
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-          /*  app.UseCors( x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-             );*/
+            // allow acces to API
+            app.UseCors(option => option
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+             );
 
             if (env.IsDevelopment())
             {

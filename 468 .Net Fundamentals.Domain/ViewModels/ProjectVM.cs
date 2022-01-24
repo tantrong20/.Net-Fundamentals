@@ -11,7 +11,8 @@ namespace _468_.Net_Fundamentals.Domain.ViewModels
 
         public string Name { get; set; }
 
-        public int CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
+
 
     }
 } 
