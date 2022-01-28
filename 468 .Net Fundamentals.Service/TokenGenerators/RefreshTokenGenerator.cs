@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace _468_.Net_Fundamentals.Service.TokenGenerators
@@ -20,7 +21,7 @@ namespace _468_.Net_Fundamentals.Service.TokenGenerators
 
         public string GenerateToken()
         {
-         
+
             var authSiginKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:RefreshTokenSecret"]));
             var refreshToken = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
@@ -29,6 +30,13 @@ namespace _468_.Net_Fundamentals.Service.TokenGenerators
                     signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(refreshToken);
+
+            /*var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }*/
         }
     }
 }

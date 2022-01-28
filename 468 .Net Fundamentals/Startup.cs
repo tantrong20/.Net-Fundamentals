@@ -14,6 +14,10 @@ using System.Text;
 using _468_.Net_Fundamentals.Service.TokenGenerators;
 using _468_.Net_Fundamentals.Service.TokenValidators;
 using _468_.Net_Fundamentals.Service.Authenticator;
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace _468_.Net_Fundamentals
 {
@@ -29,8 +33,7 @@ namespace _468_.Net_Fundamentals
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-
+   
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
                       options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -47,6 +50,8 @@ namespace _468_.Net_Fundamentals
             services.AddSingleton<AccessTokenGenerator>();
             services.AddSingleton<RefreshTokenGenerator>();
             services.AddSingleton<RefreshTokenValidator>();
+            services.AddSingleton<GetPrincipal>();
+
             services.AddScoped<AuthenticatorProvider>();
 
             // For Identity
@@ -73,9 +78,37 @@ namespace _468_.Net_Fundamentals
                  {
                      ValidateIssuer = true,
                      ValidateAudience = true,
+                     ValidateLifetime = true,
+                     ClockSkew = TimeSpan.Zero,
                      ValidAudience = Configuration["JWT:ValidAudience"],
                      ValidIssuer = Configuration["JWT:ValidIssuer"],
                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                 };
+                 options.Events = new JwtBearerEvents
+                 {
+                     OnAuthenticationFailed = context =>
+                     {
+                         /*if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                         {
+                             context.Response.Headers.Add("Token-Expired", "true");
+                         }
+                         return Task.CompletedTask;*/
+                         context.NoResult();
+                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                         context.Response.ContentType = "application/json";
+
+                         string response =
+                             JsonConvert.SerializeObject("The access token provided is not valid.");
+                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                         {
+                             context.Response.Headers.Add("Token-Expired", "true");
+                             response =
+                                 JsonConvert.SerializeObject("The access token provided has expired.");
+                         }
+
+                         context.Response.WriteAsync(response);
+                         return Task.CompletedTask;
+                     }
                  };
              });
 

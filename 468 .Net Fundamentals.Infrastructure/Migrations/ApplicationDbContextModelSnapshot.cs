@@ -406,9 +406,10 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.ViewModels.Authenticate.RefreshToken", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");

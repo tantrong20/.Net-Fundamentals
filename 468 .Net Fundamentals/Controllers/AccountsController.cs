@@ -1,6 +1,7 @@
 ﻿using _468_.Net_Fundamentals.Domain.Base;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,11 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _accountService.Login(userLoginVM);
         }
 
+        /*[AllowAnonymous]*/
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken([FromBody] string refreshRequest)
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshTokenRequest)
         {
-            return await _accountService.RefreshToken(refreshRequest);
+            return await _accountService.Refresh(refreshTokenRequest);
         }
 
         /*  [HttpPost("revoketoken")]

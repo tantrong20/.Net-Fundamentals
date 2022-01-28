@@ -1,4 +1,5 @@
-﻿using _468_.Net_Fundamentals.Domain.Entities;
+﻿using _468_.Net_Fundamentals.Controllers.ActionFilters;
+using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,8 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _projectService.GetAll();
         }
 
+        /*[LogActionFilter]*/
+        [TypeFilter(typeof(ProjectMemberActionFilter))]
         [HttpGet("{id}")]
         public async Task<ProjectVM> Get(int id)
         {

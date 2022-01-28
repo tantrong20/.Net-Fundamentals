@@ -5,6 +5,8 @@ using _468_.Net_Fundamentals.Domain.ViewModels.Authenticate;
 using _468_.Net_Fundamentals.Service.TokenGenerators;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,14 +27,21 @@ namespace _468_.Net_Fundamentals.Service.Authenticator
 
         public async Task<AuthenticatedRespone> Authenticate(AppUser user)
         {
-            string accessToken = _accessTokenGenerator.GenerateToken(user);
+            var authClaims = new List<Claim>
+                {
+                    new Claim("Id", user.Id),
+                    new Claim("Name", user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+            string accessToken = _accessTokenGenerator.GenerateToken(authClaims);
             string refreshToken = _refreshTokenGenerator.GenerateToken();
 
-            RefreshToken refreshTokenDTO = new RefreshToken
+           
+            var refreshTokenDTO = new RefreshToken
             {
                 Token = refreshToken,
                 UserId = user.Id
-
             };
 
             await _unitOfWork.Repository<RefreshToken>().InsertAsync(refreshTokenDTO);
@@ -45,5 +54,7 @@ namespace _468_.Net_Fundamentals.Service.Authenticator
                 RefreshToken = refreshToken
             };
         }
+
+       
     }
 }

@@ -11,7 +11,12 @@ using _468_.Net_Fundamentals.Service.TokenValidators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
@@ -22,16 +27,18 @@ namespace _468_.Net_Fundamentals.Service
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly RefreshTokenValidator _refreshTokenValidator;
         private readonly AuthenticatorProvider _authenticator;
+        private readonly GetPrincipal _getPrincipal;
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public AccountService(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork) : base(context)
+        public AccountService(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork, GetPrincipal getPrincipal) : base(context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _refreshTokenValidator = refreshTokenValidator;
             _authenticator = authenticator;
             _unitOfWork = unitOfWork;
+            _getPrincipal = getPrincipal;
         }
 
         public async Task<IActionResult> Login(UserLoginVM userLoginVM)
@@ -66,18 +73,38 @@ namespace _468_.Net_Fundamentals.Service
             return new UnauthorizedResult();
         }
 
-        public async Task<IActionResult> RefreshToken(string refreshRequest)
+        public async Task<IActionResult> Refresh(string refreshTokenRequest)
         {
-            bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshRequest);
+            /* var principal = _getPrincipal.FromExpiredToken(token);
+             var userId = principal.Identity.Name;
+             var savedRefreshToken = await _unitOfWork.Repository<RefreshToken>().FindAsync(refreshToken);
+
+             if (savedRefreshToken.Token != refreshToken)
+                 throw new SecurityTokenException("Invalid refresh token");
+
+             AppUser user = await _userManager.FindByIdAsync(savedRefreshToken.UserId);
+             if (user == null)
+             {
+                 return new NotFoundResult();
+             }
+             await _unitOfWork.Repository<RefreshToken>().DeleteAsync(savedRefreshToken);
+
+             AuthenticatedRespone respone = await _authenticator.Authenticate(user);
+
+             await _unitOfWork.SaveChangesAsync();
+
+             return new OkObjectResult(respone); */
+
+            bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshTokenRequest);
 
             if (!isValidRefreshToken)
             {
                 return new BadRequestResult();
             }
 
-            RefreshToken refreshTokenDTO = await _unitOfWork.Repository<RefreshToken>().FindAsync(refreshRequest);
+            RefreshToken refreshTokenDTO = await _unitOfWork.Repository<RefreshToken>().FindAsync(refreshTokenRequest);
 
-            if(refreshTokenDTO == null)
+            if (refreshTokenDTO == null)
             {
                 return new NotFoundResult();
             }
@@ -87,12 +114,14 @@ namespace _468_.Net_Fundamentals.Service
 
             AppUser user = await _userManager.FindByIdAsync(refreshTokenDTO.UserId);
 
-            if(user == null)
+            if (user == null)
             {
                 return new NotFoundResult();
             }
 
             AuthenticatedRespone respone = await _authenticator.Authenticate(user);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return new OkObjectResult(respone);
         }
@@ -155,6 +184,8 @@ namespace _468_.Net_Fundamentals.Service
             });
         }
 
-       
+     
+
+
     }
 }

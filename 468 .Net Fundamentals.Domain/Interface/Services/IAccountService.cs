@@ -12,7 +12,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     {
         public Task<IActionResult> Login(UserLoginVM userLoginVM);
         /*public Task<IActionResult> RevokeToken();*/
-        public Task<IActionResult> RefreshToken(string refreshRequest);
+        public Task<IActionResult> Refresh(string refreshTokenRequest);
 
 
         public Task<IActionResult> Register(UserRegistrationVM userRegistration);

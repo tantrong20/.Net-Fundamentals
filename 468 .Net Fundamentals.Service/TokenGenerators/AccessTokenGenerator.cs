@@ -17,24 +17,26 @@ namespace _468_.Net_Fundamentals.Service.TokenGenerators
             _configuration = configuration;
         }
 
-        public string GenerateToken(AppUser user)
+        public string GenerateToken(IEnumerable<Claim> authClaims)
         {
-            var authClaims = new List<Claim>
+            /*var authClaims = new List<Claim>
                 {
                     new Claim("Id", user.Id),
                     new Claim("Name", user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                };*/
 
             var authSiginKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
             var accessToken = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(5),
+                    notBefore: DateTime.UtcNow,
+                    expires: DateTime.UtcNow.AddMinutes(5),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
+
     }
 }

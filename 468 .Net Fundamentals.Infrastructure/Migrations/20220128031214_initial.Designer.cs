@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220124021347_initial")]
+    [Migration("20220128031214_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -408,9 +408,10 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.ViewModels.Authenticate.RefreshToken", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");

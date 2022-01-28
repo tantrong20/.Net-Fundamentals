@@ -1,5 +1,6 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.EnumType;
+using _468_.Net_Fundamentals.Domain.Interface;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
@@ -16,9 +17,12 @@ namespace _468_.Net_Fundamentals.Service
     public class TagService : RepositoryBase<Tag>, ITagService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public TagService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        private readonly ICurrrentUser _currrentUser;
+
+        public TagService(ApplicationDbContext context, IUnitOfWork unitOfWork, ICurrrentUser currrentUser) : base(context)
         {
             _unitOfWork = unitOfWork;
+            _currrentUser = currrentUser;
         }
 
         public async Task CreateOnProject(int projectId, string name)
@@ -39,6 +43,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
         public async Task<IList<TagVM>> GetAllOnProject(int projectId)
@@ -79,6 +84,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
         public async Task Delete(int id)
@@ -94,6 +100,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
 
@@ -115,11 +122,13 @@ namespace _468_.Net_Fundamentals.Service
 
                 // Hardcode for login user
                 /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
+                var currentUserId = _currrentUser?.Id;
+
 
                 var activity = new Activity
                 {
                     CardId = cardId,
-                    /*UserId = user.Id,*/
+                    UserId = currentUserId,
                     Action = AcctionEnumType.AddLabel,
                     CurrentValue = cardTag.TagId.ToString(),
                    OnDate = DateTime.Now
@@ -165,10 +174,13 @@ namespace _468_.Net_Fundamentals.Service
                 // Hardcode for login user
                 /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
 
+                var currentUserId = _currrentUser?.Id;
+
+
                 var activity = new Activity
                 {
                     CardId = cardId,
-                    /*UserId = user.Id,*/
+                    UserId = currentUserId,
                     Action = AcctionEnumType.RemoveLabel,
                     CurrentValue = cardTag.TagId.ToString(),
                     OnDate = DateTime.Now

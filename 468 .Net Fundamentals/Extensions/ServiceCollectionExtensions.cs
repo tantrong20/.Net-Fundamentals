@@ -72,12 +72,12 @@ namespace _468_.Net_Fundamentals.Extensions
 
                     // Gets name from claims. Generally it's an email address.
                     var userNameClaim = claim
-                    .Where(x => x.Type == "Name")
-                    .FirstOrDefault().Value;
+                        .Where(x => x.Type == "Name")
+                        .FirstOrDefault().Value;
 
                     var userIdClaim = claim
-                   .Where(x => x.Type == "Id")
-                   .FirstOrDefault().Value;
+                       .Where(x => x.Type == "Id")
+                       .FirstOrDefault().Value;
 
                     // 3. Set claims info to CurrentUser
                     return new CurrentUser()
