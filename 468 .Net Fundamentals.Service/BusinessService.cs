@@ -37,6 +37,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
 
@@ -70,6 +71,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             };
         }
 
@@ -86,6 +88,7 @@ namespace _468_.Net_Fundamentals.Service
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                throw e;
             };
         }
 

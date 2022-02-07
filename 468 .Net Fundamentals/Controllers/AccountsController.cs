@@ -27,12 +27,15 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _accountService.Login(userLoginVM);
         }
 
-        /*[AllowAnonymous]*/
-        [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken([FromBody] string refreshTokenRequest)
+
+        [AllowAnonymous]
+        [HttpGet("refresh/{refreshTokenRequest}")]
+        public async Task<IActionResult> RefreshToken(string refreshTokenRequest)
         {
             return await _accountService.Refresh(refreshTokenRequest);
         }
+
+
 
         /*  [HttpPost("revoketoken")]
           public async Task<IActionResult> RevokeToken()

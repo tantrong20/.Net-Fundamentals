@@ -26,7 +26,7 @@ namespace _468_.Net_Fundamentals.Service.TokenGenerators
             var refreshToken = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(5),
+                    expires: DateTime.Now.AddDays(7),
                     signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(refreshToken);

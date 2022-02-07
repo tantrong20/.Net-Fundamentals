@@ -11,6 +11,7 @@ using _468_.Net_Fundamentals.Service.TokenValidators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -75,25 +76,6 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IActionResult> Refresh(string refreshTokenRequest)
         {
-            /* var principal = _getPrincipal.FromExpiredToken(token);
-             var userId = principal.Identity.Name;
-             var savedRefreshToken = await _unitOfWork.Repository<RefreshToken>().FindAsync(refreshToken);
-
-             if (savedRefreshToken.Token != refreshToken)
-                 throw new SecurityTokenException("Invalid refresh token");
-
-             AppUser user = await _userManager.FindByIdAsync(savedRefreshToken.UserId);
-             if (user == null)
-             {
-                 return new NotFoundResult();
-             }
-             await _unitOfWork.Repository<RefreshToken>().DeleteAsync(savedRefreshToken);
-
-             AuthenticatedRespone respone = await _authenticator.Authenticate(user);
-
-             await _unitOfWork.SaveChangesAsync();
-
-             return new OkObjectResult(respone); */
 
             bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshTokenRequest);
 
@@ -102,7 +84,10 @@ namespace _468_.Net_Fundamentals.Service
                 return new BadRequestResult();
             }
 
-            RefreshToken refreshTokenDTO = await _unitOfWork.Repository<RefreshToken>().FindAsync(refreshTokenRequest);
+            RefreshToken refreshTokenDTO = await _unitOfWork.Repository<RefreshToken>()
+                .Query()
+                .Where(_=>_.Token== refreshTokenRequest)
+                .FirstOrDefaultAsync();
 
             if (refreshTokenDTO == null)
             {

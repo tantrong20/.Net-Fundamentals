@@ -25,7 +25,6 @@ namespace _468_.Net_Fundamentals.Service.TokenValidators
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ClockSkew = TimeSpan.Zero
             };
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
