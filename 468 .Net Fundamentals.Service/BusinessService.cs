@@ -43,18 +43,38 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IList<BusinessVM>> GetAllByProject(int projectId)
         {
-            var businessesVM = await _unitOfWork.Repository<Business>()
-                .Query()
-                .Where(_ => _.ProjectId == projectId)
-                .Select(b => new BusinessVM
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    ProjectId = b.ProjectId
-                })
-                .ToListAsync();
+            try
+            {
+                await _unitOfWork.BeginTransaction();
 
-            return businessesVM;
+               /* var businessStored = await _unitOfWork.Repository<Business>()
+                    .Query()
+                    .Where(_ => _.ProjectId == projectId)
+                    .ToListAsync();*/
+
+
+
+
+                var businessesVM = await _unitOfWork.Repository<Business>()
+                 .Query()
+                 .Where(_ => _.ProjectId == projectId)
+                 .Select(b => new BusinessVM
+                 {
+                     Id = b.Id,
+                     Name = b.Name,
+                     ProjectId = b.ProjectId,     
+                 })
+                 .ToListAsync();
+
+                await _unitOfWork.CommitTransaction();
+                return businessesVM;
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
+                throw e;
+            }
+            
         }
 
         public async Task Update(int id, string name)

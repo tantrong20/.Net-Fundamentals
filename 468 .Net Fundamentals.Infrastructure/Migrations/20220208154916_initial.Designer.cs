@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220207015716_initial")]
+    [Migration("20220208154916_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
