@@ -3,6 +3,7 @@ using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Domain.ViewModels.Authenticate;
 using _468_.Net_Fundamentals.Service.TokenGenerators;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace _468_.Net_Fundamentals.Service.Authenticator
 
         public async Task<AuthenticatedRespone> Authenticate(AppUser user)
         {
+
             var authClaims = new List<Claim>
                 {
                     new Claim("Id", user.Id),

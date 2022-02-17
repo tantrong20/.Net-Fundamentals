@@ -13,7 +13,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
         public Task<IActionResult> CurrentUser();
 
         /*public Task Create();*/
-        public Task<IList<UserVM>> GetAll();
+        public Task<IList<UserVM>> GetAllExceptCurrentUser();
         public Task<UserVM> Get(string id);
 
         public Task AddCardAssign(int cardId, string userId);

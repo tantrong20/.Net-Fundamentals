@@ -30,10 +30,9 @@ namespace _468_.Net_Fundamentals.Controllers
 
 
         [HttpGet]
-        public async Task<IList<UserVM>> GetAll()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            return await _userService.GetAll();
+        public async Task<IList<UserVM>> GetAllExceptCurrentUser()
+        {           
+            return await _userService.GetAllExceptCurrentUser();
         }
 
         [Route("{id}")]

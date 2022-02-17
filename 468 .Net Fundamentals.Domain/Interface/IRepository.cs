@@ -11,8 +11,6 @@ namespace _468_.Net_Fundamentals.Domain.Repositories
     public interface IRepository<T> where T : class
     {
         IQueryable<T> Query();
-
-
         Task<IList<T>> GetAllAsync();
 
         T Find(params object[] keyValues);

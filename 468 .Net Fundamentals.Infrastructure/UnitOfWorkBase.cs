@@ -54,7 +54,9 @@ namespace _468_.Net_Fundamentals.Infrastructure
                 return;
             //
             // Close connection
+            
             if (_context.Database.GetDbConnection().State == ConnectionState.Open)
+                if (_context.Database.GetDbConnection().State == ConnectionState.Open)
             {
                 _context.Database.GetDbConnection().Close();
             }

@@ -1,5 +1,6 @@
 ﻿using _468_.Net_Fundamentals.Controllers.ActionFilters;
 using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +24,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
+        [Authorize(Permissions.Projects.Create)]
         public async Task Create([FromBody] string name)
         {
             await _projectService.Create(name);

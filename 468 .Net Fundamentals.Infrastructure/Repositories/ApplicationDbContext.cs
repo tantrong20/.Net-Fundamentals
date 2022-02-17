@@ -2,6 +2,7 @@
 using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.ViewModels.Authenticate;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,7 +29,6 @@ namespace _468_.Net_Fundamentals.Infrastructure
                 {
                     entityType.SetTableName(tableName.Substring(6));
                 }
-
 
 
                 // CardAssign
@@ -59,6 +59,9 @@ namespace _468_.Net_Fundamentals.Infrastructure
             }
 
         }
+       /* public DbSet<UserRoles> UserRoles { get; set; }
+        public DbSet<RoleClaims> RoleClaims { get; set; }*/
+
 
         public DbSet<Activity> Activities { get; set; }
 

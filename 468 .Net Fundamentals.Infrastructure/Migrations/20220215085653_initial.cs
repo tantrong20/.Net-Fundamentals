@@ -72,8 +72,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    ImagePath = table.Column<string>(nullable: true),
-                    Role = table.Column<int>(nullable: false)
+                    ImagePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

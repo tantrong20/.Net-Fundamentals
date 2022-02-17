@@ -20,7 +20,7 @@ namespace _468_.Net_Fundamentals.Controllers
             _accountService = accountService;
         }
 
-
+        /*[AllowAnonymous]*/
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginVM userLoginVM)
         {

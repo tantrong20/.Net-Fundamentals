@@ -18,6 +18,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
+using _468_.Net_Fundamentals.Controllers.Authorization;
 
 namespace _468_.Net_Fundamentals
 {
@@ -51,8 +53,12 @@ namespace _468_.Net_Fundamentals
             services.AddSingleton<RefreshTokenGenerator>();
             services.AddSingleton<RefreshTokenValidator>();
             services.AddSingleton<GetPrincipal>();
-
             services.AddScoped<AuthenticatorProvider>();
+
+            // Register it as scope, because it uses Repository that probably uses dbcontext
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+
 
             // For Identity
             services.AddIdentity<AppUser, IdentityRole>(config =>
@@ -64,8 +70,7 @@ namespace _468_.Net_Fundamentals
                 .AddDefaultTokenProviders();
 
             // Adding Authentication
-            services.AddAuthentication(options =>
-            {
+            services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -88,11 +93,6 @@ namespace _468_.Net_Fundamentals
                  {
                      OnAuthenticationFailed = context =>
                      {
-                         /*if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                         {
-                             context.Response.Headers.Add("Token-Expired", "true");
-                         }
-                         return Task.CompletedTask;*/
                          context.NoResult();
                          context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                          context.Response.ContentType = "application/json";

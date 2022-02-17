@@ -12,9 +12,6 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     {
         public string ImagePath { get; set; }
 
-        [Required]
-        public Role Role { get; set; }
-
         [NotMapped]
         public string Token { get; set; }
     }

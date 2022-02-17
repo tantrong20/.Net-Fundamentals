@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220208154916_initial")]
+    [Migration("20220215085653_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -226,9 +226,6 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

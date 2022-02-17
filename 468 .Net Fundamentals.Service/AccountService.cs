@@ -1,5 +1,6 @@
 ﻿using _468_.Net_Fundamentals.Domain.Base;
 using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
@@ -28,18 +29,16 @@ namespace _468_.Net_Fundamentals.Service
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly RefreshTokenValidator _refreshTokenValidator;
         private readonly AuthenticatorProvider _authenticator;
-        private readonly GetPrincipal _getPrincipal;
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public AccountService(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork, GetPrincipal getPrincipal) : base(context)
+        public AccountService(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork) : base(context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _refreshTokenValidator = refreshTokenValidator;
             _authenticator = authenticator;
             _unitOfWork = unitOfWork;
-            _getPrincipal = getPrincipal;
         }
 
         public async Task<IActionResult> Login(UserLoginVM userLoginVM)
@@ -147,19 +146,19 @@ namespace _468_.Net_Fundamentals.Service
                 return resultStatus;
             }
 
-
-            if (!await _roleManager.RoleExistsAsync(AppUserRole.Admin))
+            
+            /*if (!await _roleManager.RoleExistsAsync(AppUserRole.Admin))
             {
                 await _roleManager.CreateAsync(new IdentityRole(AppUserRole.Admin));
             }
             if (!await _roleManager.RoleExistsAsync(AppUserRole.User))
             {
                 await _roleManager.CreateAsync(new IdentityRole(AppUserRole.User));
-            }
+            }*/
 
-            if (await _roleManager.RoleExistsAsync(AppUserRole.User))
+            if (await _roleManager.RoleExistsAsync(Roles.Basic.ToString()))
             {
-                await _userManager.AddToRoleAsync(user, AppUserRole.User);
+                await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
             }
 
             return new OkObjectResult(new Response

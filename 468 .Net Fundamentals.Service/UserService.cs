@@ -22,11 +22,13 @@ namespace _468_.Net_Fundamentals.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly ICurrrentUser _currrentUser;
-        public UserService(ApplicationDbContext context, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user) : base(context)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public UserService(ApplicationDbContext context, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager) : base(context)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _currrentUser = user;
+            _roleManager = roleManager;
         }
 
         public async Task<IActionResult> CurrentUser()
@@ -36,12 +38,19 @@ namespace _468_.Net_Fundamentals.Service
                 var id = _currrentUser?.Id;
                 var user =  await _userManager.FindByIdAsync(id);
 
+                var userRole = await _unitOfWork.Repository<IdentityUserRole<string>>().Query()
+                    .Where(_ => _.UserId == _currrentUser.Id)
+                    .FirstOrDefaultAsync();
+
+                var role = await _roleManager.FindByIdAsync(userRole.RoleId);
+
                 return new OkObjectResult(new
                 {
                     id = user.Id,
                     userName = user.UserName,
                     email = user.Email,
-                    imagePath = user.ImagePath
+                    imagePath = user.ImagePath,
+                    role = role.Name
                 });
 
             }
@@ -123,10 +132,11 @@ namespace _468_.Net_Fundamentals.Service
             return userVM;
         }
 
-        public async Task<IList<UserVM>> GetAll()
+        public async Task<IList<UserVM>> GetAllExceptCurrentUser()
         {
-            var userVMs = await _unitOfWork.Repository<AppUser>()
+            var allUsersExceptCurrentUser = await _unitOfWork.Repository<AppUser>()
               .Query()
+              .Where(_ => _.Id != _currrentUser.Id)
               .Select(u => new UserVM
               {
                   Id = u.Id,
@@ -135,7 +145,7 @@ namespace _468_.Net_Fundamentals.Service
                   ImagePath = u.ImagePath
               }).ToListAsync();
 
-            return userVMs;
+            return allUsersExceptCurrentUser;
         }
 
         public async Task DeleteCardAssign(int cardId, string userId)

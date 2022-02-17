@@ -4,10 +4,10 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.EnumType
 {
-    public enum Role
+    public enum Roles
     {
-        Employee = 1,
-        Manager = 2
+        SuperAdmin,
+        Basic
     }
 
     /*public enum Permission
