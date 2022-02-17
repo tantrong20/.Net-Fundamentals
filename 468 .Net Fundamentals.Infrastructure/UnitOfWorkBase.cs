@@ -50,19 +50,27 @@ namespace _468_.Net_Fundamentals.Infrastructure
 
         public void Dispose()
         {
-            if (_context == null)
-                return;
-            //
-            // Close connection
-            
-            if (_context.Database.GetDbConnection().State == ConnectionState.Open)
-                if (_context.Database.GetDbConnection().State == ConnectionState.Open)
+            try
             {
-                _context.Database.GetDbConnection().Close();
-            }
-            _context.Dispose();
+                if (_context == null)
+                    return;
+                //
+                // Close connection
+                if (_context.Database.GetDbConnection().State == ConnectionState.Open)
+                    if (_context.Database.GetDbConnection().State == ConnectionState.Open)
+                    {
+                        _context.Database.GetDbConnection().Close();
+                    }
+                _context.Dispose();
 
-            _context = null;
+                _context = null;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
         }
 
         public IRepository<T> Repository<T>() where T : class
@@ -98,5 +106,6 @@ namespace _468_.Net_Fundamentals.Infrastructure
         {
             return await _context.SaveChangesAsync();
         }
+
     }
 }

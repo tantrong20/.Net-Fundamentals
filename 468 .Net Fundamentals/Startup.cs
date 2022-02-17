@@ -55,11 +55,6 @@ namespace _468_.Net_Fundamentals
             services.AddSingleton<GetPrincipal>();
             services.AddScoped<AuthenticatorProvider>();
 
-            // Register it as scope, because it uses Repository that probably uses dbcontext
-            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
-            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-
-
             // For Identity
             services.AddIdentity<AppUser, IdentityRole>(config =>
                 {
@@ -111,6 +106,11 @@ namespace _468_.Net_Fundamentals
                      }
                  };
              });
+
+
+            // Register it as scope, because it uses Repository that probably uses dbcontext
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
             // Swagger
             services.AddSwaggerGen(c =>

@@ -14,15 +14,10 @@ namespace _468_.Net_Fundamentals.Controllers.Authorization
 {
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
-
-
-
-        public PermissionHandler(RoleManager<IdentityRole> roleManager, IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
+        public PermissionHandler(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
         {
-            _roleManager = roleManager;
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
         }
@@ -51,6 +46,7 @@ namespace _468_.Net_Fundamentals.Controllers.Authorization
                     return;
                 }
 
+                /*return Task.CompletedTask;*/
             }
             catch (Exception e)
             {

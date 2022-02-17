@@ -22,7 +22,8 @@ namespace _468_.Net_Fundamentals.Controllers.Authorization
 
         public Task<AuthorizationPolicy> GetFallbackPolicyAsync()
         {
-            return FallbackPolicyProvider.GetDefaultPolicyAsync();
+            /*return FallbackPolicyProvider.GetDefaultPolicyAsync();*/
+            return Task.FromResult<AuthorizationPolicy>(null);
         }
 
         public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
@@ -35,7 +36,9 @@ namespace _468_.Net_Fundamentals.Controllers.Authorization
                 return Task.FromResult(policy.Build());
             }
 
-            return FallbackPolicyProvider.GetPolicyAsync(policyName);
+            return Task.FromResult<AuthorizationPolicy>(null);
+
+            /*return FallbackPolicyProvider.GetPolicyAsync(policyName);*/
         }
     }
 }

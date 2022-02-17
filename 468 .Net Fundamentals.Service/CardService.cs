@@ -21,13 +21,14 @@ namespace _468_.Net_Fundamentals.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
+        Guid id;
 
         public CardService(ApplicationDbContext context, IUnitOfWork unitOfWork, ICurrrentUser currrentUser) : base(context)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
+            id = Guid.NewGuid();
         }
-
 
         public async Task Create(int busId, string name)
         {
