@@ -13,10 +13,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class BusinessService : RepositoryBase<Business>, IBusinessService
+    public class BusinessService : IBusinessService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BusinessService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public BusinessService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

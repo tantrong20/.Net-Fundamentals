@@ -1,6 +1,8 @@
 ﻿using _468_.Net_Fundamentals.Domain.Entities;
+using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,6 +24,7 @@ namespace _468_.Net_Fundamentals.Controllers
 
 
         [HttpPost("/api/project/{projectId}/tags")]
+        [Authorize(Permissions.Tags.Create)]
         public async Task CreateOnProject(int projectId, [FromBody] string name)
         {
             await _tagService.CreateOnProject(projectId, name);
@@ -64,6 +67,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Permissions.Tags.Delete)]
         public async Task Delete(int id)
         {
             await _tagService.Delete(id);

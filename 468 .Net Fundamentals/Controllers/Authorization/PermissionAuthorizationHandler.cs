@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers.Authorization
 {
-    public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
+    public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
-        public PermissionHandler(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
+        public PermissionAuthorizationHandler(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
@@ -39,12 +39,12 @@ namespace _468_.Net_Fundamentals.Controllers.Authorization
                                     .Where(_ => _.ClaimValue == requirement.Permission)
                                     .AnyAsync();
 
-
                 if (permissions)
                 {
                     context.Succeed(requirement);
                     return;
                 }
+
 
                 /*return Task.CompletedTask;*/
             }
@@ -53,7 +53,7 @@ namespace _468_.Net_Fundamentals.Controllers.Authorization
 
                 throw e;
             }
-          
+
         }
     }
 }

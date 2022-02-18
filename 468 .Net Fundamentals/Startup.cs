@@ -109,7 +109,7 @@ namespace _468_.Net_Fundamentals
 
 
             // Register it as scope, because it uses Repository that probably uses dbcontext
-            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+            services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
             // Swagger
@@ -128,6 +128,7 @@ namespace _468_.Net_Fundamentals
                .AllowAnyOrigin()
                .AllowAnyMethod()
                .AllowAnyHeader()
+               .WithExposedHeaders("*")
              );
 
             if (env.IsDevelopment())

@@ -17,13 +17,13 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class UserService : RepositoryBase<AppUser>, IUserService
+    public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly ICurrrentUser _currrentUser;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public UserService(ApplicationDbContext context, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager) : base(context)
+        public UserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -36,7 +36,7 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 var id = _currrentUser?.Id;
-                var user =  await _userManager.FindByIdAsync(id);
+                var user = await _userManager.FindByIdAsync(id);
 
                 var userRole = await _unitOfWork.Repository<IdentityUserRole<string>>().Query()
                     .Where(_ => _.UserId == _currrentUser.Id)
@@ -148,6 +148,21 @@ namespace _468_.Net_Fundamentals.Service
             return allUsersExceptCurrentUser;
         }
 
+        public async Task<IList<UserVM>> GetAll()
+        {
+            var allUsersExceptCurrentUser = await _unitOfWork.Repository<AppUser>()
+              .Query()
+              .Select(u => new UserVM
+              {
+                  Id = u.Id,
+                  UserName = u.UserName,
+                  Email = u.Email,
+                  ImagePath = u.ImagePath
+              }).ToListAsync();
+
+            return allUsersExceptCurrentUser;
+        }
+
         public async Task DeleteCardAssign(int cardId, string userId)
         {
             try
@@ -186,7 +201,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 throw e;
             }
-                  
+
         }
 
     }

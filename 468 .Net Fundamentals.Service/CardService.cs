@@ -17,17 +17,15 @@ using _468_.Net_Fundamentals.Domain.Interface;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class CardService : RepositoryBase<Card>, ICardService
+    public class CardService :  ICardService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
-        Guid id;
 
-        public CardService(ApplicationDbContext context, IUnitOfWork unitOfWork, ICurrrentUser currrentUser) : base(context)
+        public CardService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
-            id = Guid.NewGuid();
         }
 
         public async Task Create(int busId, string name)

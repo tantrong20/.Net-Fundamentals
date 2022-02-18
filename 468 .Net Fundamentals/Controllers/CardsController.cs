@@ -2,6 +2,7 @@
 using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace _468_.Net_Fundamentals.Controllers
 {
     [Route("api/cards")]
     [ApiController]
+    [Authorize]
     public class CardsController : ControllerBase
     {
         private readonly ICardService _cardService;

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class AccountService : RepositoryBase<AppUser>, IAccountService
+    public class AccountService : IAccountService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -31,8 +31,7 @@ namespace _468_.Net_Fundamentals.Service
         private readonly AuthenticatorProvider _authenticator;
         private readonly IUnitOfWork _unitOfWork;
 
-
-        public AccountService(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork) : base(context)
+        public AccountService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -112,9 +111,10 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IActionResult> Register(UserRegistrationVM userRegistration)
         {
-            var userExist = await _userManager.FindByEmailAsync(userRegistration.Email);
+            var validated = this.ValidateUser(userRegistration);
+            /*ar userExist = await _userManager.FindByEmailAsync(userRegistration.Email);*/
 
-            if (userExist != null)
+            if (!await validated)
             {
                 var resultStatus = new ObjectResult(new Response
                 {
@@ -166,6 +166,24 @@ namespace _468_.Net_Fundamentals.Service
                 Status = "Success",
                 Message = "User Created Success"
             });
+        }
+
+        private async Task<bool> ValidateUser(UserRegistrationVM userRegistration)
+        {
+            var userExist = await _userManager.FindByEmailAsync(userRegistration.Email);
+
+            if (userExist != null)
+            {
+                /*var resultStatus = new ObjectResult(new Response
+                {
+                    Status = "Error",
+                    Message = "User Already Exist"
+                });
+                resultStatus.StatusCode = StatusCodes.Status500InternalServerError;*/
+                return false;
+            }
+
+            return true;
         }
 
      

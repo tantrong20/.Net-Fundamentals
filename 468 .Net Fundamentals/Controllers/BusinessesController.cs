@@ -1,5 +1,7 @@
-﻿using _468_.Net_Fundamentals.Domain.Interface.Services;
+﻿using _468_.Net_Fundamentals.Domain.EnumType;
+using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,6 +22,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
+        [Authorize(Permissions.Businesses.Create)]
         public async Task Create(int projectId, [FromBody] string name)
         {
             await _businessService.Create(projectId, name);
@@ -41,6 +44,7 @@ namespace _468_.Net_Fundamentals.Controllers
 
         [Route("{id}")]
         [HttpDelete]
+        [Authorize(Permissions.Businesses.Delete)]
         public async Task Delete(int id)
         {
             await _businessService.Delete(id);

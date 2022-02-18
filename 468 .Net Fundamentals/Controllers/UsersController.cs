@@ -29,10 +29,16 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
 
-        [HttpGet]
+        /*[HttpGet]
         public async Task<IList<UserVM>> GetAllExceptCurrentUser()
         {           
             return await _userService.GetAllExceptCurrentUser();
+        }*/
+
+        [HttpGet]
+        public async Task<IList<UserVM>> GetAll()
+        {
+            return await _userService.GetAll();
         }
 
         [Route("{id}")]

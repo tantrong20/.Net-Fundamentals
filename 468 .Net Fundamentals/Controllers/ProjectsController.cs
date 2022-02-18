@@ -25,7 +25,7 @@ namespace _468_.Net_Fundamentals.Controllers
 
         [HttpPost]
         [Authorize(Permissions.Projects.Create)]
-        public async Task Create([FromBody] string name)
+        public async Task Create([FromBody] string name)    
         {
             await _projectService.Create(name);
         }
@@ -37,7 +37,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         /*[LogActionFilter]*/
-        [TypeFilter(typeof(ProjectMemberActionFilter))]
+        /*[TypeFilter(typeof(ProjectMemberActionFilter))]*/
         [HttpGet("{id}")]
         public async Task<ProjectVM> Get(int id)
         {
@@ -51,6 +51,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Permissions.Projects.Delete)]
         public async Task Delete(int id)
         {
             await _projectService.Delete(id);

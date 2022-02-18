@@ -24,7 +24,7 @@ namespace _468_.Net_Fundamentals.Infrastructure
             return await Entities.ToListAsync();
         }
 
-        public  IQueryable<T> Query()
+        public  IQueryable<T> Query()   
         {
             return  Entities.AsQueryable();
         }

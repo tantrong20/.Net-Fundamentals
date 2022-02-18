@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class TagService : RepositoryBase<Tag>, ITagService
+    public class TagService : ITagService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
 
-        public TagService(ApplicationDbContext context, IUnitOfWork unitOfWork, ICurrrentUser currrentUser) : base(context)
+        public TagService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
@@ -36,7 +36,7 @@ namespace _468_.Net_Fundamentals.Service
                     Name = name,
                     ProjectId = projectId
                 };
-              
+
                 await _unitOfWork.Repository<Tag>().InsertAsync(tag);
                 await _unitOfWork.CommitTransaction();
             }
@@ -51,20 +51,21 @@ namespace _468_.Net_Fundamentals.Service
             var tagsVM = await _unitOfWork.Repository<Tag>()
                 .Query()
                 .Where(_ => _.ProjectId == projectId)
-                .Select(t => new TagVM {
+                .Select(t => new TagVM
+                {
                     Id = t.Id,
                     Name = t.Name,
                     ProjectId = t.ProjectId
                 }).ToListAsync();
 
-           /* var tags = from tag in allTags where tag.ProjectId == projectId select tag;
+            /* var tags = from tag in allTags where tag.ProjectId == projectId select tag;
 
-            var tagsVM = new List<TagVM>();
+             var tagsVM = new List<TagVM>();
 
-            foreach(var t in tags)
-            {
-                tagsVM.Add(new TagVM { Id = t.Id, Name = t.Name, ProjectId = t.ProjectId });
-            }*/
+             foreach(var t in tags)
+             {
+                 tagsVM.Add(new TagVM { Id = t.Id, Name = t.Name, ProjectId = t.ProjectId });
+             }*/
 
             return tagsVM;
         }
@@ -75,7 +76,7 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                var tag =  await _unitOfWork.Repository<Tag>().FindAsync(id);
+                var tag = await _unitOfWork.Repository<Tag>().FindAsync(id);
 
                 tag.Name = name;
 
@@ -131,7 +132,7 @@ namespace _468_.Net_Fundamentals.Service
                     UserId = currentUserId,
                     Action = AcctionEnumType.AddLabel,
                     CurrentValue = cardTag.TagId.ToString(),
-                   OnDate = DateTime.Now
+                    OnDate = DateTime.Now
                 };
 
                 await _unitOfWork.Repository<Activity>().InsertAsync(activity);
@@ -160,7 +161,7 @@ namespace _468_.Net_Fundamentals.Service
             return cardTagVm;
         }
 
-        public  async Task DeleteCardTag(int cardId, int tagId)
+        public async Task DeleteCardTag(int cardId, int tagId)
         {
             try
             {

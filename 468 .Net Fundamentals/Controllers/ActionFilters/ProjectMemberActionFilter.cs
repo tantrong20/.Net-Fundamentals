@@ -39,7 +39,7 @@ namespace _468_.Net_Fundamentals.Controllers.ActionFilters
             else if (project?.CreatedBy != currentUserId)
             {
                 //Create your result
-                filterContext.Result = new StatusCodeResult(401);
+                filterContext.Result = new StatusCodeResult(403);
             }
             else
                 base.OnActionExecuting(filterContext);

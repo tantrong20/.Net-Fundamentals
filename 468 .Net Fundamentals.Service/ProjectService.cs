@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class ProjectService : RepositoryBase<Project>, IProjectService
+    public class ProjectService : IProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly ICurrrentUser _currrentUser;
 
-        public ProjectService(ApplicationDbContext context, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser currrentUser) : base(context)
+        public ProjectService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser currrentUser)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -77,22 +77,11 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                /*// Gets list of claims.
-                IEnumerable<Claim> claim = identity.Claims;
-
-                // Gets name from claims. Generally it's an email address.
-                var usernameClaim = claim
-                    .Where(x => x.Type == ClaimTypes.Name)
-                    .FirstOrDefault();
-
-                // Finds user.
-                var user = await _userManager
-                    .FindByNameAsync(usernameClaim.Value);*/
-                var currentUserId = _currrentUser?.Id;
+                /* var currentUserId = _currrentUser?.Id;*/
 
                 var projectVMs = await _unitOfWork.Repository<Project>()
                     .Query()
-                    .Where(_ => _.CreatedBy == currentUserId)
+                    /*.Where(_ => _.CreatedBy == currentUserId)*/
                     .Select(project => new ProjectVM
                     {
                         Id = project.Id,

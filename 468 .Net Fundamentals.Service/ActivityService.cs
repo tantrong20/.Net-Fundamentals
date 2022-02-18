@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class ActivityService : RepositoryBase<Activity>, IActivityService
+    public class ActivityService :IActivityService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ActivityService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public ActivityService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

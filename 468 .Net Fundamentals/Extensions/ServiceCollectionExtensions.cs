@@ -28,7 +28,7 @@ namespace _468_.Net_Fundamentals.Extensions
             }
             );
 
-            services.AddScoped<Func<ApplicationDbContext>>((provider) => () => provider.GetService<ApplicationDbContext>());
+            //services.AddScoped<Func<ApplicationDbContext>>((provider) => () => provider.GetService<ApplicationDbContext>());
 
             services.AddScoped<IUnitOfWork, UnitOfWorkBase>();
 

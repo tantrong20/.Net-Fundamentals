@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class TodoService : RepositoryBase<Todo>, ITodoService
+    public class TodoService : ITodoService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public TodoService(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public TodoService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -35,7 +35,7 @@ namespace _468_.Net_Fundamentals.Service
                 };
 
                 await _unitOfWork.Repository<Todo>().InsertAsync(todo);
-                
+
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -51,7 +51,8 @@ namespace _468_.Net_Fundamentals.Service
             var todoVMs = await _unitOfWork.Repository<Todo>()
                 .Query()
                 .Where(_ => _.CardId == cardId)
-                .Select(todo => new TodoVM {
+                .Select(todo => new TodoVM
+                {
                     Id = todo.Id,
                     IsCompleted = todo.IsCompleted,
                     Name = todo.Name,
@@ -74,7 +75,7 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                var todo =  await _unitOfWork.Repository<Todo>().FindAsync(id);
+                var todo = await _unitOfWork.Repository<Todo>().FindAsync(id);
 
                 todo.Name = name;
 

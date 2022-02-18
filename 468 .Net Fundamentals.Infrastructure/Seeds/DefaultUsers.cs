@@ -58,6 +58,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Seeds
         {
             var adminRole = await roleManager.FindByNameAsync("SuperAdmin");
             await roleManager.AddPermissionClaim(adminRole, "Projects");
+            await roleManager.AddPermissionClaim(adminRole, "Tags");
+            await roleManager.AddPermissionClaim(adminRole, "Businesses");
         }
 
         public static async Task AddPermissionClaim(this RoleManager<IdentityRole> roleManager, IdentityRole role, string module)
@@ -74,3 +76,4 @@ namespace _468_.Net_Fundamentals.Infrastructure.Seeds
         }
     }
 }
+
