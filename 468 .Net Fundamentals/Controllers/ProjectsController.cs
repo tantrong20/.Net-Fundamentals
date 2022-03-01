@@ -45,6 +45,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Permissions.Projects.Edit)]
         public async Task Update(int id, [FromBody] string name)
         {
             await _projectService.Update(id, name);

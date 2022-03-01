@@ -31,7 +31,7 @@ namespace _468_.Net_Fundamentals.Service.TokenGenerators
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
                     notBefore: DateTime.UtcNow,
-                    expires: DateTime.UtcNow.AddSeconds(10),
+                    expires: DateTime.UtcNow.AddSeconds(12),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256));
 

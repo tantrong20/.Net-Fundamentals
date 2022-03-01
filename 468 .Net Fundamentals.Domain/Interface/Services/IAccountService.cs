@@ -1,5 +1,6 @@
 ﻿using _468_.Net_Fundamentals.Domain.Base;
 using _468_.Net_Fundamentals.Domain.ViewModels;
+using _468_.Net_Fundamentals.Domain.ViewModels.Request;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     {
         public Task<IActionResult> Login(UserLoginVM userLoginVM);
         /*public Task<IActionResult> RevokeToken();*/
-        public Task<IActionResult> Refresh(string refreshTokenRequest);
+        public Task<IActionResult> Refresh(RefreshTokenRequest request);
 
 
         public Task<IActionResult> Register(UserRegistrationVM userRegistration);

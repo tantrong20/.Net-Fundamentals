@@ -1,10 +1,12 @@
 ﻿using _468_.Net_Fundamentals.Domain.Base;
 using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Domain.EnumType;
+using _468_.Net_Fundamentals.Domain.Interface;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Domain.ViewModels.Authenticate;
+using _468_.Net_Fundamentals.Domain.ViewModels.Request;
 using _468_.Net_Fundamentals.Infrastructure;
 using _468_.Net_Fundamentals.Service.Authenticator;
 using _468_.Net_Fundamentals.Service.TokenGenerators;
@@ -15,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -28,16 +31,17 @@ namespace _468_.Net_Fundamentals.Service
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly RefreshTokenValidator _refreshTokenValidator;
+        private readonly GetPrincipal _getPrincipal;
         private readonly AuthenticatorProvider _authenticator;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator, IUnitOfWork unitOfWork)
+
+        public AccountService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, RefreshTokenValidator refreshTokenValidator, AuthenticatorProvider authenticator,GetPrincipal getPrincipal)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _refreshTokenValidator = refreshTokenValidator;
             _authenticator = authenticator;
-            _unitOfWork = unitOfWork;
+            _getPrincipal = getPrincipal;
         }
 
         public async Task<IActionResult> Login(UserLoginVM userLoginVM)
@@ -46,24 +50,7 @@ namespace _468_.Net_Fundamentals.Service
 
             if (user != null && await _userManager.CheckPasswordAsync(user, userLoginVM.Password))
             {
-                /* var userRoles = await _userManager.GetRolesAsync(user);
-                 var authClaims = new List<Claim>
-                 {
-                     new Claim("Id", user.Id),
-                     new Claim("Name", user.UserName),
-                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                 };
-                 foreach (var userRole in userRoles)
-                 {
-                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                 }
-                 var authSiginKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-                 var accessToken = new JwtSecurityToken(
-                         issuer: _configuration["JWT:ValidIssuer"], 
-                         audience: _configuration["JWT:ValidAudience"],
-                         expires: DateTime.Now.AddHours(5),
-                         claims: authClaims,
-                         signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256));*/
+
                 AuthenticatedRespone respone = await _authenticator.Authenticate(user);
 
                 return new OkObjectResult(respone);
@@ -72,30 +59,26 @@ namespace _468_.Net_Fundamentals.Service
             return new UnauthorizedResult();
         }
 
-        public async Task<IActionResult> Refresh(string refreshTokenRequest)
+        public async Task<IActionResult> Refresh(RefreshTokenRequest request)
         {
+            string accessToken = request.Token;
+            string refreshToken = request.RefreshToken;
 
-            bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshTokenRequest);
+            bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshToken);
 
             if (!isValidRefreshToken)
             {
                 return new BadRequestResult();
             }
 
-            RefreshToken refreshTokenDTO = await _unitOfWork.Repository<RefreshToken>()
-                .Query()
-                .Where(_=>_.Token== refreshTokenRequest)
-                .FirstOrDefaultAsync();
+            var principal = _getPrincipal.FromExpiredToken(accessToken);
+            var identity = principal.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var userNameClaim = claim
+                .Where(x => x.Type == "Name")
+                .FirstOrDefault().Value;
 
-            if (refreshTokenDTO == null)
-            {
-                return new NotFoundResult();
-            }
-
-            await _unitOfWork.Repository<RefreshToken>().DeleteAsync(refreshTokenDTO);
-
-
-            AppUser user = await _userManager.FindByIdAsync(refreshTokenDTO.UserId);
+            AppUser user = await _userManager.FindByNameAsync(userNameClaim);
 
             if (user == null)
             {
@@ -103,8 +86,6 @@ namespace _468_.Net_Fundamentals.Service
             }
 
             AuthenticatedRespone respone = await _authenticator.Authenticate(user);
-
-            await _unitOfWork.SaveChangesAsync();
 
             return new OkObjectResult(respone);
         }
@@ -146,7 +127,7 @@ namespace _468_.Net_Fundamentals.Service
                 return resultStatus;
             }
 
-            
+
             /*if (!await _roleManager.RoleExistsAsync(AppUserRole.Admin))
             {
                 await _roleManager.CreateAsync(new IdentityRole(AppUserRole.Admin));
@@ -186,7 +167,7 @@ namespace _468_.Net_Fundamentals.Service
             return true;
         }
 
-     
+
 
 
     }

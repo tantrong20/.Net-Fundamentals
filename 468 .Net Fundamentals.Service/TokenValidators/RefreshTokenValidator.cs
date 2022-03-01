@@ -34,7 +34,7 @@ namespace _468_.Net_Fundamentals.Service.TokenValidators
                 tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return false;
             }

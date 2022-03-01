@@ -30,13 +30,6 @@ namespace _468_.Net_Fundamentals.Service.TokenGenerators
                     signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(refreshToken);
-
-            /*var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }*/
         }
     }
 }
