@@ -52,9 +52,6 @@ namespace _468_.Net_Fundamentals.Service
                     .Where(_ => _.ProjectId == projectId)
                     .ToListAsync();*/
 
-
-
-
                 var businessesVM = await _unitOfWork.Repository<Business>()
                  .Query()
                  .Where(_ => _.ProjectId == projectId)

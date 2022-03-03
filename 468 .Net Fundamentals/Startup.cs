@@ -123,11 +123,11 @@ namespace _468_.Net_Fundamentals
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // allow acces to API
+            // Enable the Cross-Origin Requests
             app.UseCors(option => option
-               .AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader()
+               .AllowAnyOrigin() // Any Origin
+               .AllowAnyMethod() // Any Method GET, PUT, POST, DELETE
+               .AllowAnyHeader() // Any Header
                .WithExposedHeaders("*")
              );
 

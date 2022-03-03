@@ -11,14 +11,13 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface IAccountService
     {
-        public Task<IActionResult> Login(UserLoginVM userLoginVM);
+        Task<IActionResult> Login(UserLoginVM userLoginVM);
         /*public Task<IActionResult> RevokeToken();*/
-        public Task<IActionResult> Refresh(RefreshTokenRequest request);
+        Task<IActionResult> Refresh(RefreshTokenRequest request);
 
 
-        public Task<IActionResult> Register(UserRegistrationVM userRegistration);
-       /* public Task<IActionResult> RegisterAdmin(UserRegistrationVM userRegistration);*/
-
+        Task<IActionResult> Register(UserRegistrationVM userRegistration);
+        /* public Task<IActionResult> RegisterAdmin(UserRegistrationVM userRegistration);*/
 
     }
 }

@@ -44,6 +44,7 @@ namespace _468_.Net_Fundamentals.Service
             _getPrincipal = getPrincipal;
         }
 
+
         public async Task<IActionResult> Login(UserLoginVM userLoginVM)
         {
             var user = await _userManager.FindByEmailAsync(userLoginVM.Email);
@@ -72,13 +73,7 @@ namespace _468_.Net_Fundamentals.Service
             }
 
             var principal = _getPrincipal.FromExpiredToken(accessToken);
-            var identity = principal.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claim = identity.Claims;
-            var userNameClaim = claim
-                .Where(x => x.Type == "Name")
-                .FirstOrDefault().Value;
-
-            AppUser user = await _userManager.FindByNameAsync(userNameClaim);
+            var user = await GetUserFromPrincipal(principal);
 
             if (user == null)
             {
@@ -90,10 +85,12 @@ namespace _468_.Net_Fundamentals.Service
             return new OkObjectResult(respone);
         }
 
+
+
         public async Task<IActionResult> Register(UserRegistrationVM userRegistration)
         {
+            // Validate user model
             var validated = this.ValidateUser(userRegistration);
-            /*ar userExist = await _userManager.FindByEmailAsync(userRegistration.Email);*/
 
             if (!await validated)
             {
@@ -106,6 +103,7 @@ namespace _468_.Net_Fundamentals.Service
                 return resultStatus;
             }
 
+            // Register new user
             var user = new AppUser
             {
                 UserName = userRegistration.UserName,
@@ -128,15 +126,6 @@ namespace _468_.Net_Fundamentals.Service
             }
 
 
-            /*if (!await _roleManager.RoleExistsAsync(AppUserRole.Admin))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(AppUserRole.Admin));
-            }
-            if (!await _roleManager.RoleExistsAsync(AppUserRole.User))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(AppUserRole.User));
-            }*/
-
             if (await _roleManager.RoleExistsAsync(Roles.Basic.ToString()))
             {
                 await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
@@ -149,18 +138,14 @@ namespace _468_.Net_Fundamentals.Service
             });
         }
 
+  
+
         private async Task<bool> ValidateUser(UserRegistrationVM userRegistration)
         {
             var userExist = await _userManager.FindByEmailAsync(userRegistration.Email);
 
             if (userExist != null)
             {
-                /*var resultStatus = new ObjectResult(new Response
-                {
-                    Status = "Error",
-                    Message = "User Already Exist"
-                });
-                resultStatus.StatusCode = StatusCodes.Status500InternalServerError;*/
                 return false;
             }
 
@@ -168,7 +153,18 @@ namespace _468_.Net_Fundamentals.Service
         }
 
 
+        public async Task<AppUser> GetUserFromPrincipal(ClaimsPrincipal principal)
+        {
+            var identity = principal.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var userNameClaim = claim
+                .Where(x => x.Type == "Name")
+                .FirstOrDefault().Value;
 
+            AppUser user = await _userManager.FindByNameAsync(userNameClaim);
+
+            return user;
+        }
 
     }
 }
