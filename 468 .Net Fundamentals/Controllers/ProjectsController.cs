@@ -5,6 +5,7 @@ using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -18,9 +19,11 @@ namespace _468_.Net_Fundamentals.Controllers
     public class ProjectsController : ControllerBase
     {
         private IProjectService _projectService;
-        public ProjectsController(IProjectService projectService)
+        private readonly ILogger<ProjectsController> _logger;
+        public ProjectsController(IProjectService projectService, ILogger<ProjectsController> logger)
         {
             _projectService = projectService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -33,6 +36,7 @@ namespace _468_.Net_Fundamentals.Controllers
         [HttpGet]
         public async Task<IList<ProjectVM>> GetAll()
         {
+            _logger.LogInformation("Hello from logger...");
             return await _projectService.GetAll();
         }
 

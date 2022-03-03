@@ -2,13 +2,11 @@ using _468_.Net_Fundamentals.Domain.Entities;
 using _468_.Net_Fundamentals.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals
@@ -27,7 +25,7 @@ namespace _468_.Net_Fundamentals
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     await DefaultRoles.SeedAsync(userManager, roleManager);
                     await DefaultUsers.SeedBasicUserAsync(userManager, roleManager);
-                    await DefaultUsers.SeedSuperAdminAsync(userManager, roleManager);           
+                    await DefaultUsers.SeedSuperAdminAsync(userManager, roleManager);
                 }
                 catch (Exception e)
                 {
@@ -41,7 +39,14 @@ namespace _468_.Net_Fundamentals
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseSentry();
                     webBuilder.UseStartup<Startup>();
                 });
+                /*.ConfigureLogging (logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                })
+                .UseNLog();  */
     }
 }
