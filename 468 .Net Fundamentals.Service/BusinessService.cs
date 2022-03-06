@@ -25,11 +25,12 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                var business = new Business
+                var business = new Business()
                 {
-                    Name = name,
-                    ProjectId = projectId
+                    ProjectId = projectId,
+                    Name = name
                 };
+
 
                 await _unitOfWork.Repository<Business>().InsertAsync(business);
                 await _unitOfWork.SaveChangesAsync();

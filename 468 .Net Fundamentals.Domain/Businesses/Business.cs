@@ -9,6 +9,15 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     [Table("Business")]
     public class Business : EntityBase<int>
     {
+        private Business()
+        {
+
+        }
+        public Business(int projectId, string name)
+        {
+            this.Name = name;
+            SetProjectId(projectId);
+        }
         public string Name { get; set; }
 
         public int ProjectId { get; set; }
@@ -18,5 +27,10 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public virtual IList<Card> Cards { get; set; }
 
+        public void SetProjectId(int projectId)
+        {
+
+            this.ProjectId = projectId;
+        }
     }
 }

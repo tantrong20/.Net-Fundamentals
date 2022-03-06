@@ -10,9 +10,12 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 {
     public class AppUser : IdentityUser
     {
+    
         public string ImagePath { get; set; }
 
-        [NotMapped]
-        public string Token { get; set; }
+        /*[NotMapped]
+        public string Token { get; set; }*/
+
+        public virtual ICollection<Project> Projects { get; set; }
     }
 }

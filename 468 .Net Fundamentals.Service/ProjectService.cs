@@ -34,13 +34,14 @@ namespace _468_.Net_Fundamentals.Service
             {
                 var currentUserId = _currrentUser?.Id;
 
-                var project = new Project
+                var project = new Project()
                 {
-                    Name = name,
                     CreatedBy = currentUserId,
+                    Name = name
                 };
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
+                                
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)

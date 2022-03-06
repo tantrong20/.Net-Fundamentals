@@ -1,13 +1,10 @@
-﻿using _468_.Net_Fundamentals.Controllers.ActionFilters;
-using _468_.Net_Fundamentals.Domain.Entities;
-using _468_.Net_Fundamentals.Domain.EnumType;
+﻿using _468_.Net_Fundamentals.Domain.EnumType;
 using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Controllers

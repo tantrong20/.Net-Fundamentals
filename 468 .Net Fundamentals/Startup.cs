@@ -131,6 +131,8 @@ namespace _468_.Net_Fundamentals
                .WithExposedHeaders("*")
              );
 
+            app.UseExceptionMiddleware();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
