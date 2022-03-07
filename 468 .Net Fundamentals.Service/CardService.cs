@@ -14,18 +14,21 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using Newtonsoft.Json;
 using _468_.Net_Fundamentals.Domain.Interface;
+using _468_.Net_Fundamentals.Service.LogActivity;
 
 namespace _468_.Net_Fundamentals.Service
 {
-    public class CardService :  ICardService
+    public class CardService : ICardService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
+        private readonly LoggingUserActivity _loggingUserActivity;
 
-        public CardService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
+        public CardService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser, LoggingUserActivity loggingUserActivity)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
+            _loggingUserActivity = loggingUserActivity;
         }
 
         public async Task Create(int busId, string name)
@@ -34,36 +37,17 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                // Hard code for user
-                /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
-
                 var card = await _unitOfWork.Repository<Business>()
                     .Query()
                     .Where(_ => _.Id == busId)
-                    .Select(bus => new Card
-                    {
-                        Name = name,
-                        BusinessId = bus.Id,
-                        Index = bus.Cards.Count != 0 ? bus.Cards.Max(c => c.Index) + 1 : 1,
-                        Priority = TaskPriority.Normal,
-                        CreatedOn = DateTime.Now
-                    })
+                    .Select(bus => new Card(name, bus.Id, bus.Cards.Count != 0 ? bus.Cards.Max(c => c.Index) + 1 : 1))
                     .FirstOrDefaultAsync();
 
                 await _unitOfWork.Repository<Card>().InsertAsync(card);
                 await _unitOfWork.SaveChangesAsync();
 
                 // User action 
-                var currentUserId = _currrentUser?.Id;
-
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.Create,
-                    OnDate = DateTime.Now
-                };
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+                await _loggingUserActivity.Save(card.Id, AcctionEnumType.Create);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -74,11 +58,12 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
+
         public async Task<IList<CardVM>> GetAllByBusiness(int busId)
         {
             try
             {
-                var cardVMs = await _unitOfWork.Repository<Card>()
+                return await _unitOfWork.Repository<Card>()
                     .Query()
                     .Where(_ => _.BusinessId == busId)
                     .OrderBy(_ => _.Index)
@@ -93,8 +78,6 @@ namespace _468_.Net_Fundamentals.Service
                         Index = card.Index
                     })
                     .ToListAsync();
-
-                return cardVMs;
             }
             catch (Exception e)
             {
@@ -108,7 +91,7 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                var cardVM = await _unitOfWork.Repository<Card>()
+                return await _unitOfWork.Repository<Card>()
                     .Query()
                     .Where(_ => _.Id == id)
                     .Select(card => new CardVM
@@ -122,12 +105,9 @@ namespace _468_.Net_Fundamentals.Service
                         Index = card.Index
 
                     }).FirstOrDefaultAsync();
-
-                return cardVM;
             }
             catch (Exception e)
             {
-
                 throw e;
             }
 
@@ -139,25 +119,12 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                // User action 
-                var currentUserId = _currrentUser?.Id;
-
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
-
-                if (card == null) return;
-
-                // Save history
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.Delete,
-                    OnDate = DateTime.Now
-                };
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
-
                 // Delete card
                 await _unitOfWork.Repository<Card>().DeleteAsync(id);
+
+                // Save history
+                await _loggingUserActivity.Save(card.Id, AcctionEnumType.Delete);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -176,41 +143,26 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                // User action 
-                var currentUserId = _currrentUser?.Id;
-
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+
                 // To get business name
                 var business = await _unitOfWork.Repository<Business>().FindAsync(data.BusId);
 
+                // Update Card Movement
+                card.UpdateMovement(data.BusId, data.Index);
 
                 // Save history
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    OnDate = DateTime.Now
-                };
-
                 if (card.BusinessId == data.BusId)
                 {
-                    activity.Action = AcctionEnumType.ReOrder;
-                    activity.CurrentValue = business.Name;
+                    var currentValue = business.Name;
+                    await _loggingUserActivity.Save(card.Id, AcctionEnumType.ReOrder, currentValue);
                 }
                 else
                 {
-                    activity.Action = AcctionEnumType.UpdateBusiness;
-
-                    activity.PreviousValue = card.Business.Name;
-                    activity.CurrentValue = business.Name;
+                    var currentValue = business.Name;
+                    var previousValue = card.Business.Name;
+                    await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateBusiness, currentValue, previousValue);
                 }
-
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
-
-                // Movement
-                card.BusinessId = data.BusId;
-                card.Index = data.Index;
-
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -229,28 +181,14 @@ namespace _468_.Net_Fundamentals.Service
 
                 await _unitOfWork.BeginTransaction();
 
-                // User action 
-                var currentUserId = _currrentUser?.Id;
-
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
-
-                if (card.Name == newName) return;
+                // Update Name
+                card.UpdateName(newName);
 
                 // Save history
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.UpdateName,
-                    PreviousValue = card.Name,
-                    CurrentValue = newName,
-                    OnDate = DateTime.Now
-                };
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
-
-                // Update Name
-                card.Name = newName;
-
+                var previousValue = card.Name;
+                var currentValue = newName;
+                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateName, currentValue, previousValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -267,32 +205,19 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.BeginTransaction();
-                // User action 
-                var currentUserId = _currrentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
                 if (card.Priority == newPriority) return;
 
-                // Save history
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.UpdatePriority,
-                    PreviousValue = card.Priority.ToString(),
-                    CurrentValue = newPriority.ToString(),
-                   /* PreviousValue = JsonConvert.SerializeObject(
-                        new { priority = card.Priority }),
-                    CurrentValue = JsonConvert.SerializeObject(
-                        new { priority = newPriority }),*/
-                    OnDate = DateTime.Now
-                };
-
                 // Update priority
-                card.Priority = newPriority;
+                card.UpdatePriority(newPriority);
 
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+                // Save history
+                var previousValue = card.Priority.ToString();
+                var currentValue = newPriority.ToString();
+                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdatePriority, currentValue, previousValue);
+
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -308,28 +233,18 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.BeginTransaction();
-                // User action 
-                var currentUserId = _currrentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
                 if (card.Description == newDescription) return;
+                // Update description
+                card.UpdateDescription(newDescription);
 
                 // Save history
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.UpdateDescription,
-                    PreviousValue = card.Description,
-                    CurrentValue = newDescription,
-                    OnDate = DateTime.Now
-                };
+                var previousValue = card.Description;
+                var currentValue = newDescription;
+                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateDescription, currentValue, previousValue);
 
-                // Update description
-                card.Description = newDescription;
-
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -345,27 +260,16 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 await _unitOfWork.BeginTransaction();
-                // User action 
-                var currentUserId = _currrentUser?.Id;
-                var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
+                var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+                // Update duedate
+                card.UpdateDuedate(DateTime.Parse(newDuedate));
 
                 // Save history
-                var activity = new Activity
-                {
-                    CardId = card.Id,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.UpdateDuedate,
-                    PreviousValue = card.Duedate.ToString(),
-                    CurrentValue = DateTime.Parse(newDuedate).ToString(),
-                    OnDate = DateTime.Now
-                };
+                var previousValue = card.Duedate.ToString();
+                var currentValue = DateTime.Parse(newDuedate).ToString();
+                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateDuedate, currentValue, previousValue);
 
-
-                // Update duedate
-                card.Duedate = DateTime.Parse(newDuedate);
-
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)

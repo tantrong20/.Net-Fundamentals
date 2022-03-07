@@ -25,19 +25,14 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                var business = new Business()
-                {
-                    ProjectId = projectId,
-                    Name = name
-                };
-
+                var business = new Business(projectId, name);
 
                 await _unitOfWork.Repository<Business>().InsertAsync(business);
+
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
         }
@@ -46,49 +41,35 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
 
-               /* var businessStored = await _unitOfWork.Repository<Business>()
-                    .Query()
-                    .Where(_ => _.ProjectId == projectId)
-                    .ToListAsync();*/
-
-                var businessesVM = await _unitOfWork.Repository<Business>()
+                return await _unitOfWork.Repository<Business>()
                  .Query()
                  .Where(_ => _.ProjectId == projectId)
                  .Select(b => new BusinessVM
                  {
                      Id = b.Id,
                      Name = b.Name,
-                     ProjectId = b.ProjectId,     
+                     ProjectId = b.ProjectId,
                  })
                  .ToListAsync();
 
-                await _unitOfWork.CommitTransaction();
-                return businessesVM;
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
-            
+
         }
 
         public async Task Update(int id, string name)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 var business = await _unitOfWork.Repository<Business>().FindAsync(id);
-                business.Name = name;
-
-                await _unitOfWork.CommitTransaction();
+                business.UpdateName(name);
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             };
         }
@@ -97,19 +78,14 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 await _unitOfWork.Repository<Business>().DeleteAsync(id);
-
-                await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             };
         }
 
-    
+
     }
 }

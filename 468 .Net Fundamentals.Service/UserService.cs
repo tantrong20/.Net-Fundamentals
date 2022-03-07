@@ -5,6 +5,7 @@ using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
+using _468_.Net_Fundamentals.Service.LogActivity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,15 @@ namespace _468_.Net_Fundamentals.Service
         private readonly UserManager<AppUser> _userManager;
         private readonly ICurrrentUser _currrentUser;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public UserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager)
+        private readonly LoggingUserActivity _loggingUserActivity;
+
+        public UserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager, LoggingUserActivity loggingUserActivity)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _currrentUser = user;
             _roleManager = roleManager;
+            _loggingUserActivity = loggingUserActivity;
         }
 
         public async Task<IActionResult> CurrentUser()
@@ -67,29 +71,18 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                var currentUserId = _currrentUser?.Id;
-
-
                 // Saving user assign
                 var cardAssign = new CardAssign
                 {
                     CardId = cardId,
                     AssignTo = userId
                 };
+                await _unitOfWork.Repository<CardAssign>().InsertAsync(cardAssign);
 
                 // Save history
-                var activity = new Activity
-                {
-                    CardId = cardId,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.AssignUser,
-                    CurrentValue = userId.ToString(),
-                    OnDate = DateTime.Now
-                };
-
-                await _unitOfWork.Repository<CardAssign>().InsertAsync(cardAssign);
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
-
+                var currentValue = userId.ToString();
+                await _loggingUserActivity.Save(cardId, AcctionEnumType.AssignUser, currentValue);
+ 
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -118,7 +111,7 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<UserVM> Get(string Id)
         {
-            var userVM = await _unitOfWork.Repository<AppUser>()
+            return await _unitOfWork.Repository<AppUser>()
               .Query()
               .Where(_ => _.Id == Id)
               .Select(u => new UserVM
@@ -128,13 +121,11 @@ namespace _468_.Net_Fundamentals.Service
                   Email = u.Email,
                   ImagePath = u.ImagePath
               }).FirstOrDefaultAsync();
-
-            return userVM;
         }
 
         public async Task<IList<UserVM>> GetAllExceptCurrentUser()
         {
-            var allUsersExceptCurrentUser = await _unitOfWork.Repository<AppUser>()
+            return await _unitOfWork.Repository<AppUser>()
               .Query()
               .Where(_ => _.Id != _currrentUser.Id)
               .Select(u => new UserVM
@@ -144,13 +135,11 @@ namespace _468_.Net_Fundamentals.Service
                   Email = u.Email,
                   ImagePath = u.ImagePath
               }).ToListAsync();
-
-            return allUsersExceptCurrentUser;
         }
 
         public async Task<IList<UserVM>> GetAll()
         {
-            var allUsersExceptCurrentUser = await _unitOfWork.Repository<AppUser>()
+           return await _unitOfWork.Repository<AppUser>()
               .Query()
               .Select(u => new UserVM
               {
@@ -159,8 +148,6 @@ namespace _468_.Net_Fundamentals.Service
                   Email = u.Email,
                   ImagePath = u.ImagePath
               }).ToListAsync();
-
-            return allUsersExceptCurrentUser;
         }
 
         public async Task DeleteCardAssign(int cardId, string userId)
@@ -169,36 +156,23 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-
+                // Delete Card Assign
                 var cardAssign = await _unitOfWork.Repository<CardAssign>()
                     .Query()
                     .Where(_ => _.CardId == cardId && _.AssignTo == userId)
                     .FirstOrDefaultAsync();
-
                 await _unitOfWork.Repository<CardAssign>().DeleteAsync(cardAssign);
 
-                // Hardcode for login user
-                // var user = await _unitOfWork.Repository<AppUser>().FindAsync(1);
-                var currentUserId = _currrentUser?.Id;
                 // Save history
-                var activity = new Activity
-                {
-                    CardId = cardId,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.RemoveAssignUser,
-                    CurrentValue = cardAssign.AssignTo.ToString(),
-                    OnDate = DateTime.Now
-                };
-
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
-
+                var currentValue = cardAssign.AssignTo.ToString();
+                await _loggingUserActivity.Save(cardId, AcctionEnumType.RemoveAssignUser, currentValue);
 
                 await _unitOfWork.CommitTransaction();
 
             }
             catch (Exception e)
             {
-
+                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
 

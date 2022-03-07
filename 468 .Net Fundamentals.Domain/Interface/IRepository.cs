@@ -17,6 +17,7 @@ namespace _468_.Net_Fundamentals.Domain.Repositories
 
         Task<T> FindAsync(params object[] keyValues);
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
+        /*IQueryable<T> GetList(Expression<Func<T, bool>> expression);*/
         Task InsertAsync(T entity, bool saveChanges = true);
 
         Task InsertRangeAsync(IEnumerable<T> entities, bool saveChanges = true);

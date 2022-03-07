@@ -8,8 +8,12 @@ using System.Text;
 namespace _468_.Net_Fundamentals.Domain.Entities
 {
     [Table("Card")]
-    public class Card : EntityBase<int>
+    public partial class Card 
     {
+        public Card()
+        {
+           
+        }
         public string Name { get; set; }
 
         [DataType(DataType.Date)]
@@ -27,7 +31,6 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         public int BusinessId { get; set; }
 
         public float Index { get; set; }
-
 
         [ForeignKey("BusinessId")]
         public virtual Business Business { get; set; }

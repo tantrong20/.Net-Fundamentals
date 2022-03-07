@@ -32,17 +32,21 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
+                await _unitOfWork.BeginTransaction();
                 var currentUserId = _currrentUser?.Id;
 
-                var project = new Project()
-                {
-                    CreatedBy = currentUserId,
-                    Name = name
-                };
+                var project = new Project(name, currentUserId);
+
+                project.AddBusiness("Cơ hội");
+                project.AddBusiness("Báo giá");
+                project.AddBusiness("Đơn hàng");
+                project.AddBusiness("Hoàn thành");
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
-                                
                 await _unitOfWork.SaveChangesAsync();
+
+                await _unitOfWork.CommitTransaction();
+
             }
             catch (Exception e)
             {
@@ -55,16 +59,13 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                var project = await _unitOfWork.Repository<Project>().FindAsync(id);
-
-                var projectVM = new ProjectVM
-                {
-                    Id = project.Id,
-                    Name = project.Name,
-                    CreatedBy = project.CreatedBy,
-                };
-
-                return projectVM;
+                return await _unitOfWork.Repository<Project>().Query().Where(_ => _.Id == id)
+                            .Select(project => new ProjectVM()
+                            {
+                                Id = project.Id,
+                                Name = project.Name,
+                                CreatedBy = project.CreatedBy,
+                            }).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {
@@ -79,8 +80,7 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 /* var currentUserId = _currrentUser?.Id;*/
-
-                var projectVMs = await _unitOfWork.Repository<Project>()
+                return await _unitOfWork.Repository<Project>()
                     .Query()
                     /*.Where(_ => _.CreatedBy == currentUserId)*/
                     .Select(project => new ProjectVM
@@ -90,7 +90,6 @@ namespace _468_.Net_Fundamentals.Service
                         CreatedBy = project.CreatedBy,
                     })
                     .ToListAsync();
-                return projectVMs;
             }
             catch (Exception e)
             {
@@ -104,16 +103,13 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 var project = await _unitOfWork.Repository<Project>().FindAsync(id);
-                project.Name = name;
+                project.UpdateName(name);
 
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
         }
@@ -127,7 +123,6 @@ namespace _468_.Net_Fundamentals.Service
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
         }

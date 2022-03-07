@@ -25,7 +25,6 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
 
                 var todo = new Todo
                 {
@@ -35,12 +34,11 @@ namespace _468_.Net_Fundamentals.Service
                 };
 
                 await _unitOfWork.Repository<Todo>().InsertAsync(todo);
-
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
 
@@ -48,7 +46,7 @@ namespace _468_.Net_Fundamentals.Service
         public async Task<IList<TodoVM>> GetAll(int cardId)
         {
 
-            var todoVMs = await _unitOfWork.Repository<Todo>()
+            return await _unitOfWork.Repository<Todo>()
                 .Query()
                 .Where(_ => _.CardId == cardId)
                 .Select(todo => new TodoVM
@@ -58,17 +56,6 @@ namespace _468_.Net_Fundamentals.Service
                     Name = todo.Name,
                     CardId = todo.CardId
                 }).ToListAsync();
-
-            /*var todos = from todo in alltodo where todo.CardId == cardId select todo;
-
-            var todoVMs = new List<TodoVM>();
-
-            foreach (var todo in todos)
-            {
-                todoVMs.Add(new TodoVM { Name = todo.Name, CardId = todo.CardId });
-            }*/
-
-            return todoVMs;
         }
 
         public async Task UpdateName(int id, string name)
@@ -83,10 +70,10 @@ namespace _468_.Net_Fundamentals.Service
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
-        public async Task UpdateComplete(int id, Boolean status)
+        public async Task UpdateComplete(int id, bool status)
         {
             try
             {
@@ -98,22 +85,19 @@ namespace _468_.Net_Fundamentals.Service
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
         public async Task Delete(int id)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 await _unitOfWork.Repository<Todo>().DeleteAsync(id);
-
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
+                throw e;
             }
         }
     }

@@ -41,26 +41,6 @@ namespace _468_.Net_Fundamentals.Service.Authenticator
             string accessToken = _accessTokenGenerator.GenerateToken(authClaims);
             string refreshToken = _refreshTokenGenerator.GenerateToken();
 
-
-            /*RefreshToken savedRefreshToken = await _unitOfWork.Repository<RefreshToken>().Query().Where(_ => _.UserId == user.Id).FirstOrDefaultAsync();
-
-            string refreshToken = savedRefreshToken?.Token;
-
-            if (savedRefreshToken == null)
-            {
-                    refreshToken = _refreshTokenGenerator.GenerateToken();
-
-                    var refreshTokenDTO = new RefreshToken
-                    {
-                        Token = refreshToken,
-                        UserId = user.Id
-                    };
-
-                    await _unitOfWork.Repository<RefreshToken>().InsertAsync(refreshTokenDTO);
-                    await _unitOfWork.SaveChangesAsync();
-            }*/
-
-
             return new AuthenticatedRespone
             {
                 AccessToken = accessToken,

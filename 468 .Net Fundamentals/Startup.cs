@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using _468_.Net_Fundamentals.Controllers.Authorization;
+using _468_.Net_Fundamentals.Service.LogActivity;
 
 namespace _468_.Net_Fundamentals
 {
@@ -54,6 +55,7 @@ namespace _468_.Net_Fundamentals
             services.AddSingleton<RefreshTokenValidator>();
             services.AddSingleton<GetPrincipal>();
             services.AddScoped<AuthenticatorProvider>();
+            services.AddScoped<LoggingUserActivity>();
 
             // For Identity
             services.AddIdentity<AppUser, IdentityRole>(config =>

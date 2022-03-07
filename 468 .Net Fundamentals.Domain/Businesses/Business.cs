@@ -7,30 +7,20 @@ using System.Text;
 namespace _468_.Net_Fundamentals.Domain.Entities
 {
     [Table("Business")]
-    public class Business : EntityBase<int>
+    public partial class Business 
     {
-        private Business()
+        public Business()
         {
-
+            Cards = new HashSet<Card>();
         }
-        public Business(int projectId, string name)
-        {
-            this.Name = name;
-            SetProjectId(projectId);
-        }
-        public string Name { get; set; }
 
-        public int ProjectId { get; set; }
+        public string Name { get; private set; }
+        public int ProjectId { get; private set; }
 
-        [ForeignKey("ProjectId")]      
-        public virtual Project Project { get; set; }
+        [ForeignKey("ProjectId")]
+        public virtual Project Project { get; private set; }
 
-        public virtual IList<Card> Cards { get; set; }
+        public virtual ICollection<Card> Cards { get; private set; }
 
-        public void SetProjectId(int projectId)
-        {
-
-            this.ProjectId = projectId;
-        }
     }
 }

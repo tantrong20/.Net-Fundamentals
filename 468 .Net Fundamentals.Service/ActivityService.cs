@@ -28,7 +28,6 @@ namespace _468_.Net_Fundamentals.Service
             activities.Reverse();
 
             return activities;
-
         }
     }
 }

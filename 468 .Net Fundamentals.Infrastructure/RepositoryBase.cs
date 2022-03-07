@@ -95,5 +95,10 @@ namespace _468_.Net_Fundamentals.Infrastructure
         {
             return await Entities.AnyAsync(expression);
         }
+
+       /* public IQueryable<T> GetList(Expression<Func<T, bool>> expression)
+        {
+            return Entities.Where(expression);
+        }*/
     }
 }
