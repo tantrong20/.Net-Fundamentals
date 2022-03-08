@@ -24,15 +24,15 @@ namespace _468_.Net_Fundamentals.Service
         private readonly UserManager<AppUser> _userManager;
         private readonly ICurrrentUser _currrentUser;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly LoggingUserActivity _loggingUserActivity;
+        private readonly UserActivityLoger _userActivityLoger;
 
-        public UserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager, LoggingUserActivity loggingUserActivity)
+        public UserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrrentUser user, RoleManager<IdentityRole> roleManager, UserActivityLoger userActivityLoger)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _currrentUser = user;
             _roleManager = roleManager;
-            _loggingUserActivity = loggingUserActivity;
+            _userActivityLoger = userActivityLoger;
         }
 
         public async Task<IActionResult> CurrentUser()
@@ -75,7 +75,7 @@ namespace _468_.Net_Fundamentals.Service
                 card.Assign(userId);
          
                 var currentValue = userId.ToString();
-                await _loggingUserActivity.Save(cardId, AcctionEnumType.AssignUser, currentValue);
+                await _userActivityLoger.Log(cardId, AcctionEnumType.AssignUser, currentValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -159,7 +159,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 // Save history
                 var currentValue = cardAssign.AssignTo.ToString();
-                await _loggingUserActivity.Save(cardId, AcctionEnumType.RemoveAssignUser, currentValue);
+                await _userActivityLoger.Log(cardId, AcctionEnumType.RemoveAssignUser, currentValue);
 
                 await _unitOfWork.CommitTransaction();
 

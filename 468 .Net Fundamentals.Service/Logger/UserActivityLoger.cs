@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace _468_.Net_Fundamentals.Service.LogActivity
 {
-    public class LoggingUserActivity
+    public class UserActivityLoger
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
 
-        public LoggingUserActivity(ICurrrentUser currrentUser, IUnitOfWork unitOfWork)
+        public UserActivityLoger(ICurrrentUser currrentUser, IUnitOfWork unitOfWork)
         {
             _currrentUser = currrentUser;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Save(int cardId, AcctionEnumType action, string? currentValue = null, string? previousValue = null)
+        public async Task Log(int cardId, AcctionEnumType action, string? currentValue = null, string? previousValue = null)
         {
             var currentUserId = _currrentUser?.Id;
 

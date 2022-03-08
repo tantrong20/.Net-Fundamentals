@@ -19,26 +19,22 @@ namespace _468_.Net_Fundamentals.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
-        private readonly LoggingUserActivity _loggingUserActivity;
+        private readonly UserActivityLoger _userActivityLoger;
 
-        public TagService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser, LoggingUserActivity loggingUserActivity)
+        public TagService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser, UserActivityLoger userActivityLoger)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
-            _loggingUserActivity = loggingUserActivity;
+            _userActivityLoger = userActivityLoger;
         }
 
         public async Task CreateOnProject(int projectId, string name)
         {
             try
             {
-                var tag = new Tag
-                {
-                    Name = name,
-                    ProjectId = projectId
-                };
+                var project  =await _unitOfWork.Repository<Project>().FindAsync(projectId);
+                project.AddTag(name);
 
-                await _unitOfWork.Repository<Tag>().InsertAsync(tag);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
@@ -100,7 +96,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 // Save Action
                 var currentValue = tagId.ToString();
-                await _loggingUserActivity.Save(cardId, AcctionEnumType.AddLabel, currentValue);
+                await _userActivityLoger.Log(cardId, AcctionEnumType.AddLabel, currentValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -137,7 +133,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 // Save Action
                 var currentValue = tagId.ToString();
-                await _loggingUserActivity.Save(cardId, AcctionEnumType.RemoveLabel, currentValue);
+                await _userActivityLoger.Log(cardId, AcctionEnumType.RemoveLabel, currentValue);
 
                 await _unitOfWork.CommitTransaction();
             }

@@ -55,7 +55,7 @@ namespace _468_.Net_Fundamentals
             services.AddSingleton<RefreshTokenValidator>();
             services.AddSingleton<GetPrincipal>();
             services.AddScoped<AuthenticatorProvider>();
-            services.AddScoped<LoggingUserActivity>();
+            services.AddScoped<UserActivityLoger>();
 
             // For Identity
             services.AddIdentity<AppUser, IdentityRole>(config =>

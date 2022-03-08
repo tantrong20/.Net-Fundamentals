@@ -22,13 +22,13 @@ namespace _468_.Net_Fundamentals.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
-        private readonly LoggingUserActivity _loggingUserActivity;
+        private readonly UserActivityLoger _userActivityLoger;
 
-        public CardService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser, LoggingUserActivity loggingUserActivity)
+        public CardService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser, UserActivityLoger userActivityLoger)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
-            _loggingUserActivity = loggingUserActivity;
+            _userActivityLoger = userActivityLoger;
         }
 
         public async Task Create(int busId, string name)
@@ -47,7 +47,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.SaveChangesAsync();
 
                 // User action 
-                await _loggingUserActivity.Save(card.Id, AcctionEnumType.Create);
+                await _userActivityLoger.Log(card.Id, AcctionEnumType.Create);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -124,7 +124,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.Repository<Card>().DeleteAsync(id);
 
                 // Save history
-                await _loggingUserActivity.Save(card.Id, AcctionEnumType.Delete);
+                await _userActivityLoger.Log(card.Id, AcctionEnumType.Delete);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -155,13 +155,13 @@ namespace _468_.Net_Fundamentals.Service
                 if (card.BusinessId == data.BusId)
                 {
                     var currentValue = business.Name;
-                    await _loggingUserActivity.Save(card.Id, AcctionEnumType.ReOrder, currentValue);
+                    await _userActivityLoger.Log(card.Id, AcctionEnumType.ReOrder, currentValue);
                 }
                 else
                 {
                     var currentValue = business.Name;
                     var previousValue = card.Business.Name;
-                    await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateBusiness, currentValue, previousValue);
+                    await _userActivityLoger.Log(card.Id, AcctionEnumType.UpdateBusiness, currentValue, previousValue);
                 }
 
                 await _unitOfWork.CommitTransaction();
@@ -188,7 +188,7 @@ namespace _468_.Net_Fundamentals.Service
                 // Save history
                 var previousValue = card.Name;
                 var currentValue = newName;
-                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateName, currentValue, previousValue);
+                await _userActivityLoger.Log(card.Id, AcctionEnumType.UpdateName, currentValue, previousValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -216,7 +216,7 @@ namespace _468_.Net_Fundamentals.Service
                 // Save history
                 var previousValue = card.Priority.ToString();
                 var currentValue = newPriority.ToString();
-                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdatePriority, currentValue, previousValue);
+                await _userActivityLoger.Log(card.Id, AcctionEnumType.UpdatePriority, currentValue, previousValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -243,7 +243,7 @@ namespace _468_.Net_Fundamentals.Service
                 // Save history
                 var previousValue = card.Description;
                 var currentValue = newDescription;
-                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateDescription, currentValue, previousValue);
+                await _userActivityLoger.Log(card.Id, AcctionEnumType.UpdateDescription, currentValue, previousValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -268,7 +268,7 @@ namespace _468_.Net_Fundamentals.Service
                 // Save history
                 var previousValue = card.Duedate.ToString();
                 var currentValue = DateTime.Parse(newDuedate).ToString();
-                await _loggingUserActivity.Save(card.Id, AcctionEnumType.UpdateDuedate, currentValue, previousValue);
+                await _userActivityLoger.Log(card.Id, AcctionEnumType.UpdateDuedate, currentValue, previousValue);
 
                 await _unitOfWork.CommitTransaction();
             }

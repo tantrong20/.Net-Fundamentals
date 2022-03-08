@@ -28,9 +28,5 @@
     <ProjectReference Include="..\468 .Net Fundamentals.Service\468 .Net Fundamentals.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middleware\" />
-  </ItemGroup>
-
 
 </Project>

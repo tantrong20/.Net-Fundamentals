@@ -59,23 +59,15 @@ namespace _468_.Net_Fundamentals.Infrastructure
             }
 
         }
-       /* public DbSet<UserRoles> UserRoles { get; set; }
-        public DbSet<RoleClaims> RoleClaims { get; set; }*/
-
 
         public DbSet<Activity> Activities { get; set; }
-
         public DbSet<Project> Projects { get; set; }
         public DbSet<Business> Businesses { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<CardAssign> CardAssigns { get; set; }
         public DbSet<CardTag> CardTags { get; set; }
-
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Todo> Todos { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
-
-
 
     }
 }

@@ -34,7 +34,7 @@ namespace _468_.Net_Fundamentals.Controllers.ActionFilters
 
             if(project == null)
             {
-                filterContext.Result = new StatusCodeResult(401);
+                filterContext.Result = new StatusCodeResult(500);
             }
             else if (project?.CreatedBy != currentUserId)
             {

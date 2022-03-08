@@ -19,12 +19,16 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public void AddBusiness(string name)
         {
-            Businesses.Add(new Business(this, name));
+            this.Businesses.Add(new Business(this, name));
         }
 
         public void UpdateName(string name)
         {
             this.Name = name;
+        }
+        public void AddTag (string name)
+        {
+            this.Tags.Add(new Tag(this.Id, name));
         }
     }
 }
