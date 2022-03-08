@@ -13,7 +13,6 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         {
             Cards = new HashSet<Card>();
         }
-
         public string Name { get; private set; }
         public int ProjectId { get; private set; }
 

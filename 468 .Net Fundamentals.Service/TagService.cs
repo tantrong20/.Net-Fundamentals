@@ -5,6 +5,7 @@ using _468_.Net_Fundamentals.Domain.Interface.Services;
 using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
+using _468_.Net_Fundamentals.Service.LogActivity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,19 +19,19 @@ namespace _468_.Net_Fundamentals.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrrentUser _currrentUser;
+        private readonly LoggingUserActivity _loggingUserActivity;
 
-        public TagService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser)
+        public TagService(IUnitOfWork unitOfWork, ICurrrentUser currrentUser, LoggingUserActivity loggingUserActivity)
         {
             _unitOfWork = unitOfWork;
             _currrentUser = currrentUser;
+            _loggingUserActivity = loggingUserActivity;
         }
 
         public async Task CreateOnProject(int projectId, string name)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 var tag = new Tag
                 {
                     Name = name,
@@ -38,17 +39,16 @@ namespace _468_.Net_Fundamentals.Service
                 };
 
                 await _unitOfWork.Repository<Tag>().InsertAsync(tag);
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
         }
         public async Task<IList<TagVM>> GetAllOnProject(int projectId)
         {
-            var tagsVM = await _unitOfWork.Repository<Tag>()
+            return await _unitOfWork.Repository<Tag>()
                 .Query()
                 .Where(_ => _.ProjectId == projectId)
                 .Select(t => new TagVM
@@ -57,34 +57,20 @@ namespace _468_.Net_Fundamentals.Service
                     Name = t.Name,
                     ProjectId = t.ProjectId
                 }).ToListAsync();
-
-            /* var tags = from tag in allTags where tag.ProjectId == projectId select tag;
-
-             var tagsVM = new List<TagVM>();
-
-             foreach(var t in tags)
-             {
-                 tagsVM.Add(new TagVM { Id = t.Id, Name = t.Name, ProjectId = t.ProjectId });
-             }*/
-
-            return tagsVM;
         }
 
         public async Task Update(int id, string name)
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 var tag = await _unitOfWork.Repository<Tag>().FindAsync(id);
 
                 tag.Name = name;
 
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
         }
@@ -92,15 +78,12 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                await _unitOfWork.BeginTransaction();
-
                 await _unitOfWork.Repository<Tag>().DeleteAsync(id);
 
-                await _unitOfWork.CommitTransaction();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                await _unitOfWork.RollbackTransaction();
                 throw e;
             }
         }
@@ -111,31 +94,13 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                var cardTag = new CardTag
-                {
-                    CardId = cardId,
-                    TagId = tagId
-                };
+                // Add Card Tag
+                var card = await _unitOfWork.Repository<Card>().FindAsync(cardId);
+                card.AddTag(tagId);
 
-                await _unitOfWork.Repository<CardTag>().InsertAsync(cardTag);
-                await _unitOfWork.SaveChangesAsync();
-
-
-                // Hardcode for login user
-                /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
-                var currentUserId = _currrentUser?.Id;
-
-
-                var activity = new Activity
-                {
-                    CardId = cardId,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.AddLabel,
-                    CurrentValue = cardTag.TagId.ToString(),
-                    OnDate = DateTime.Now
-                };
-
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+                // Save Action
+                var currentValue = tagId.ToString();
+                await _loggingUserActivity.Save(cardId, AcctionEnumType.AddLabel, currentValue);
 
                 await _unitOfWork.CommitTransaction();
             }
@@ -148,7 +113,7 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IList<CardTagVM>> GetAllCardTag(int cardId)
         {
-            var cardTagVm = await _unitOfWork.Repository<CardTag>()
+            return await _unitOfWork.Repository<CardTag>()
                .Query()
                .Where(_ => _.CardId == cardId)
                .Select(t => new CardTagVM
@@ -157,8 +122,6 @@ namespace _468_.Net_Fundamentals.Service
                    TagId = t.TagId,
                    TagName = t.Tag.Name
                }).ToListAsync();
-
-            return cardTagVm;
         }
 
         public async Task DeleteCardTag(int cardId, int tagId)
@@ -172,21 +135,9 @@ namespace _468_.Net_Fundamentals.Service
                     .FirstOrDefaultAsync();
                 await _unitOfWork.Repository<CardTag>().DeleteAsync(cardTag);
 
-                // Hardcode for login user
-                /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
-
-                var currentUserId = _currrentUser?.Id;
-
-
-                var activity = new Activity
-                {
-                    CardId = cardId,
-                    UserId = currentUserId,
-                    Action = AcctionEnumType.RemoveLabel,
-                    CurrentValue = cardTag.TagId.ToString(),
-                    OnDate = DateTime.Now
-                };
-                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+                // Save Action
+                var currentValue = tagId.ToString();
+                await _loggingUserActivity.Save(cardId, AcctionEnumType.RemoveLabel, currentValue);
 
                 await _unitOfWork.CommitTransaction();
             }

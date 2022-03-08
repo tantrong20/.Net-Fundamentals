@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220307020322_initial")]
+    [Migration("20220308012045_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -313,9 +313,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<string>("AssignTo")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("CardId1")
+                        .HasColumnType("int");
+
                     b.HasKey("CardId", "AssignTo");
 
                     b.HasIndex("AssignTo");
+
+                    b.HasIndex("CardId1");
 
                     b.ToTable("CardAssign");
                 });
@@ -328,7 +333,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<int>("TagId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CardId1")
+                        .HasColumnType("int");
+
                     b.HasKey("CardId", "TagId");
+
+                    b.HasIndex("CardId1");
 
                     b.HasIndex("TagId");
 
@@ -503,6 +513,10 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", null)
+                        .WithMany("Assigns")
+                        .HasForeignKey("CardId1");
                 });
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardTag", b =>
@@ -512,6 +526,10 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("CardId1");
 
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Tag", "Tag")
                         .WithMany()
@@ -541,7 +559,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Todo", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
-                        .WithMany()
+                        .WithMany("Todos")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

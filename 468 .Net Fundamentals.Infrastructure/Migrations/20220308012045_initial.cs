@@ -257,8 +257,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Duedate = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Priority = table.Column<int>(nullable: false),
-                    BusinessId = table.Column<int>(nullable: false),
-                    Index = table.Column<float>(nullable: false)
+                    Index = table.Column<float>(nullable: false),
+                    BusinessId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -276,7 +276,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 columns: table => new
                 {
                     CardId = table.Column<int>(nullable: false),
-                    AssignTo = table.Column<string>(nullable: false)
+                    AssignTo = table.Column<string>(nullable: false),
+                    CardId1 = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -292,6 +293,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         principalTable: "Card",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CardAssign_Card_CardId1",
+                        column: x => x.CardId1,
+                        principalTable: "Card",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -299,7 +306,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 columns: table => new
                 {
                     CardId = table.Column<int>(nullable: false),
-                    TagId = table.Column<int>(nullable: false)
+                    TagId = table.Column<int>(nullable: false),
+                    CardId1 = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -309,6 +317,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         column: x => x.CardId,
                         principalTable: "Card",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CardTag_Card_CardId1",
+                        column: x => x.CardId1,
+                        principalTable: "Card",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CardTag_Tag_TagId",
                         column: x => x.TagId,
@@ -352,6 +366,16 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "IX_CardAssign_AssignTo",
                 table: "CardAssign",
                 column: "AssignTo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CardAssign_CardId1",
+                table: "CardAssign",
+                column: "CardId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CardTag_CardId1",
+                table: "CardTag",
+                column: "CardId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardTag_TagId",

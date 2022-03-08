@@ -25,14 +25,8 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-
-                var todo = new Todo
-                {
-                    Name = name,
-                    CardId = cardId,
-                    IsCompleted = false
-                };
-
+                var todo = new Todo(cardId, name);
+      
                 await _unitOfWork.Repository<Todo>().InsertAsync(todo);
                 await _unitOfWork.SaveChangesAsync();
             }
@@ -63,8 +57,7 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 var todo = await _unitOfWork.Repository<Todo>().FindAsync(id);
-
-                todo.Name = name;
+                todo.UpdateName(name);
 
                 await _unitOfWork.SaveChangesAsync();
             }
@@ -78,8 +71,7 @@ namespace _468_.Net_Fundamentals.Service
             try
             {
                 var todo = await _unitOfWork.Repository<Todo>().FindAsync(id);
-
-                todo.IsCompleted = status;
+                todo.UpdateStatus(status);
 
                 await _unitOfWork.SaveChangesAsync();
             }

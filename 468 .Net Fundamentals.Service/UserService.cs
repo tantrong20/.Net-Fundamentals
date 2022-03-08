@@ -71,18 +71,12 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                // Saving user assign
-                var cardAssign = new CardAssign
-                {
-                    CardId = cardId,
-                    AssignTo = userId
-                };
-                await _unitOfWork.Repository<CardAssign>().InsertAsync(cardAssign);
-
-                // Save history
+                var card = await _unitOfWork.Repository<Card>().FindAsync(cardId);
+                card.Assign(userId);
+         
                 var currentValue = userId.ToString();
                 await _loggingUserActivity.Save(cardId, AcctionEnumType.AssignUser, currentValue);
- 
+
                 await _unitOfWork.CommitTransaction();
             }
             catch (Exception e)
@@ -139,15 +133,15 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IList<UserVM>> GetAll()
         {
-           return await _unitOfWork.Repository<AppUser>()
-              .Query()
-              .Select(u => new UserVM
-              {
-                  Id = u.Id,
-                  UserName = u.UserName,
-                  Email = u.Email,
-                  ImagePath = u.ImagePath
-              }).ToListAsync();
+            return await _unitOfWork.Repository<AppUser>()
+               .Query()
+               .Select(u => new UserVM
+               {
+                   Id = u.Id,
+                   UserName = u.UserName,
+                   Email = u.Email,
+                   ImagePath = u.ImagePath
+               }).ToListAsync();
         }
 
         public async Task DeleteCardAssign(int cardId, string userId)

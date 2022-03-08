@@ -44,5 +44,20 @@ namespace _468_.Net_Fundamentals.Domain.Entities
             this.Index = index;
         }
 
+        public void Assign(string userId)
+        {
+            this.CardAssigns.Add(new CardAssign(this.Id, userId));
+        }
+
+        public void AddTag(int tagId)
+        {
+            this.CardTags.Add(new CardTag(this.Id, tagId));
+        }
+
+        public void AddTodo(string name)
+        {
+            this.Todos.Add(new Todo(this.Id, name));
+        }
+
     }
 }
