@@ -16,8 +16,8 @@ namespace _468_.Net_Fundamentals.Domain.Entities
             Tags = new HashSet<Tag>();
         }
 
-        [Required]
-        public string Name { get; private set; }
+        /*[Required]
+        public string Name { get; private set; }*/
 
         [Required]
         [Display(Name = "Created On")]
