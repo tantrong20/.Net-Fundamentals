@@ -411,6 +411,24 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.ToTable("Todo");
                 });
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.ViewModels.Authenticate.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -495,7 +513,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", null)
-                        .WithMany("CardAssigns")
+                        .WithMany("Assigns")
                         .HasForeignKey("CardId1");
                 });
 
@@ -508,7 +526,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", null)
-                        .WithMany("CardTags")
+                        .WithMany("Tags")
                         .HasForeignKey("CardId1");
 
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Tag", "Tag")
@@ -530,7 +548,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Tag", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Project", "Project")
-                        .WithMany("Tags")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

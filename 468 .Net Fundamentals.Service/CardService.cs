@@ -37,15 +37,11 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
 
-                var business = await _unitOfWork.Repository<Business>()
+                var card = await _unitOfWork.Repository<Business>()
                     .Query()
                     .Where(_ => _.Id == busId)
+                    .Select(bus => new Card(name, bus.Id, bus.Cards.Count != 0 ? bus.Cards.Max(c => c.Index) + 1 : 1))
                     .FirstOrDefaultAsync();
-
-                if(business == null)
-                    throw new Exception("Business not found");
-                var index = business.Cards.Count != 0 ? business.Cards.Max(c => c.Index) + 1 : 1;
-                var card = new Card(name, business.Id, index);
 
                 await _unitOfWork.Repository<Card>().InsertAsync(card);
                 await _unitOfWork.SaveChangesAsync();
@@ -65,7 +61,9 @@ namespace _468_.Net_Fundamentals.Service
 
         public async Task<IList<CardVM>> GetAllByBusiness(int busId)
         {
-            return await _unitOfWork.Repository<Card>()
+            try
+            {
+                return await _unitOfWork.Repository<Card>()
                     .Query()
                     .Where(_ => _.BusinessId == busId)
                     .OrderBy(_ => _.Index)
@@ -80,6 +78,12 @@ namespace _468_.Net_Fundamentals.Service
                         Index = card.Index
                     })
                     .ToListAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
 
         }
 
