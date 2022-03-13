@@ -8,14 +8,11 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.Entities
 {
-    public partial class AppUser : IdentityUser
+    public partial class AppUser 
     {
-        public AppUser()
+        public void AddProject(string name)
         {
-            Projects = new HashSet<Project>();
+            this.Projects.Add(new Project(this.Id, name));
         }
-        public string ImagePath { get; set; }
-
-        public virtual ICollection<Project> Projects { get; set; }
     }
 }

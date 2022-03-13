@@ -12,8 +12,8 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     {
         public Project()
         {
-            Businesses = new HashSet<Business>();
-            Tags = new HashSet<Tag>();
+            Businesses = new Collection<Business>();
+            Tags = new Collection<Tag>();
         }
 
         [Required]

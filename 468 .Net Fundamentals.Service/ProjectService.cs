@@ -35,7 +35,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.BeginTransaction();
                 var currentUserId = _currrentUser?.Id;
 
-                var project = new Project(name, currentUserId);
+                var project = new Project(currentUserId, name);
 
                 project.AddBusiness("Cơ hội");
                 project.AddBusiness("Báo giá");
