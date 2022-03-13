@@ -16,7 +16,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
             Tags = new HashSet<Tag>();
         }
 
-        [Required]
+        /*[Required]
         public string Name { get; private set; }
 
         [Required]
@@ -31,7 +31,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public virtual ICollection<Business> Businesses { get; private set; }
 
-        public virtual ICollection<Tag> Tags { get; private set; }
+        public virtual ICollection<Tag> Tags { get; private set; }*/
 
     }
 }
