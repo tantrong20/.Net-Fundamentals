@@ -19,9 +19,9 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         /*[Required]
         public string Name { get; private set; }*/
 
-        [Required]
+        /*[Required]
         [Display(Name = "Created On")]
-        public DateTime CreatedOn { get; private set; }
+        public DateTime CreatedOn { get; private set; }*/
 
         [Required]
         public string CreatedBy { get; private set ; }
