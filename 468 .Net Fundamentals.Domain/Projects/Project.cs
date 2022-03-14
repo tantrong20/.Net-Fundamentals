@@ -15,6 +15,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
             Businesses = new HashSet<Business>();
             Tags = new HashSet<Tag>();
         }
+        // From feture branch
         // Test conflict
         // Create conflict
         /*[Required]
