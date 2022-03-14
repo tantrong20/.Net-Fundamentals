@@ -15,7 +15,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
             Businesses = new HashSet<Business>();
             Tags = new HashSet<Tag>();
         }
-
+        // Test conflict
         /*[Required]
         public string Name { get; private set; }
 
