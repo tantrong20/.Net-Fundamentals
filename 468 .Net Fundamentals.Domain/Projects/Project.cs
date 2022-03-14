@@ -16,7 +16,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
             Tags = new HashSet<Tag>();
         }
 
-        /*[Required]
+        [Required]
         public string Name { get; private set; }
 
         [Required]
@@ -24,14 +24,14 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         public DateTime CreatedOn { get; private set; }
 
         [Required]
-        public string CreatedBy { get; private set ; }
+        public string CreatedBy { get; private set; }
 
         [ForeignKey("CreatedBy")]
         public virtual AppUser User { get; private set; }
 
         public virtual ICollection<Business> Businesses { get; private set; }
 
-        public virtual ICollection<Tag> Tags { get; private set; }*/
+        public virtual ICollection<Tag> Tags { get; private set; }
 
     }
 }
